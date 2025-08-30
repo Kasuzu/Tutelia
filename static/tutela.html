@@ -1,0 +1,815 @@
+<!doctype html>
+<html lang="es" data-theme="dark">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Tutela – Wizard</title>
+  <!-- Bootstrap 5 -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link href="styles.css" rel="stylesheet">
+  <link href="/static/tutela.css" rel="stylesheet"></head>
+<body class="wizard-page">
+  <nav class="navbar navbar-expand-lg">
+    <div class="container-fluid">
+      <a class="navbar-brand fw-semibold" href="index.html">← Inicio</a>
+      <span class="ms-2">Wizard de Acción de Tutela</span>
+      <div class="ms-auto d-flex align-items-center gap-2">
+        <button id="themeBtn" class="theme-toggle" type="button" title="Cambiar tema">
+          <svg id="icoMoon" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+            <path d="M21 12.79A9 9 0 0 1 11.21 3 7 7 0 1 0 21 12.79z"/>
+          </svg>
+          <svg id="icoSun" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true" style="display:none">
+            <path d="M12 4V2m0 20v-2m8-8h2M2 12h2m13.657-6.343 1.414-1.414M4.929 19.071l1.414-1.414m0-11.314L4.93 4.93M19.071 19.07l-1.414-1.414M12 6a6 6 0 1 1 0 12A6 6 0 0 1 12 6z"/>
+          </svg>
+          <span id="themeLabel">Dark</span>
+        </button>
+        <span id="caseBadge" class="badge text-bg-secondary">Sin caso</span>
+        <button id="newCaseBtn" class="btn btn-outline-light btn-sm">Nueva tutela</button>
+      </div>
+    </div>
+  </nav>
+
+  <main class="container my-4">
+    <!-- Top: progress + quick steps nav -->
+    <div class="row g-3 align-items-center">
+      <div class="col-lg-9">
+        <ul class="nav nav-pills small">
+          <li class="nav-item"><button class="nav-link active" data-goto="1">1. Partes</button></li>
+          <li class="nav-item"><button class="nav-link" data-goto="2">2. Introducción</button></li>
+          <li class="nav-item"><button class="nav-link" data-goto="3">3. Hechos</button></li>
+          <li class="nav-item"><button class="nav-link" data-goto="4">4. Pruebas y Anexos</button></li>
+          <li class="nav-item"><button class="nav-link" data-goto="5">5. Pretensiones</button></li>
+          <li class="nav-item"><button class="nav-link" data-goto="6">6. Cadena IA</button></li>
+          <li class="nav-item"><button class="nav-link" data-goto="7">7. Componer & Exportar</button></li>
+        </ul>
+      </div>
+      <div class="col-lg-3">
+        <div class="progress">
+          <div id="progressBar" class="progress-bar" role="progressbar" style="width: 14%;"></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Steps -->
+    <div class="mt-3">
+
+      <!-- STEP 1: PARTES -->
+      <section class="step active" data-step="1">
+        <div class="row g-3">
+          <div class="col-lg-6">
+            <div class="card shadow-soft h-100">
+              <div class="card-body">
+                <div class="d-flex justify-content-between align-items-center mb-2">
+                  <h5 class="card-title mb-0">Accionante(s)</h5>
+                  <span class="badge badge-soft">Obligatorio</span>
+                </div>
+                <form id="formAccionante" class="row g-2">
+                  <div class="col-md-6"><label class="form-label required">Nombres</label><input class="form-control" name="nombres" required></div>
+                  <div class="col-md-6"><label class="form-label required">Apellidos</label><input class="form-control" name="apellidos" required></div>
+                  
+<div class="col-md-4">
+  <label class="form-label">Tipo ID</label>
+  <select class="form-select" name="tipo_id">
+    <option value="">Seleccione…</option>
+    <option value="CC">Cédula de ciudadanía (CC)</option>
+    <option value="TI">Tarjeta de Identidad (TI)</option>
+    <option value="CE">Cédula de extranjería (CE)</option>
+    <option value="NIT">NIT</option>
+    <option value="PAS">Pasaporte (PAS)</option>
+    <option value="RC">Registro civil (RC)</option>
+    <option value="NUIP">NUIP</option>
+    <option value="PPT">Permiso por Protección Temporal (PPT)</option>
+    <option value="PEP">Permiso Especial de Permanencia (PEP)</option>
+    <option value="SC">Salvoconducto (SC)</option>
+    <option value="CD">Carné diplomático (CD)</option>
+    <option value="SD">Sin identificación (SD)</option>
+  </select>
+</div>
+
+                  <div class="col-md-8"><label class="form-label">Número ID</label><input class="form-control" name="numero_id"></div>
+                  <div class="col-md-6"><label class="form-label">Correo</label><input class="form-control" name="email" type="email"></div>
+                  <div class="col-md-6"><label class="form-label">Teléfono</label><input class="form-control" name="telefono"></div>
+                  <div class="col-12"><label class="form-label">Dirección</label><input class="form-control" name="direccion"></div>
+                  <div class="col-12 d-flex gap-2 mt-2">
+                    <button class="btn btn-primary btn-icon" type="submit">
+                      <span>Agregar</span>
+                    </button>
+                    <button class="btn btn-outline-light btn-sm" type="button" id="refreshIntroBtn">Refrescar introducción</button>
+                  </div>
+                </form>
+              </div>
+            </div>
+          </div>
+          <div class="col-lg-6">
+            <div class="card shadow-soft h-100">
+              <div class="card-body">
+                <div class="d-flex justify-content-between align-items-center mb-2">
+                  <h5 class="card-title mb-0">Accionado(s)</h5>
+                </div>
+                <form id="formAccionado" class="row g-2">
+                  <div class="col-md-6"><label class="form-label required">Nombres / Razón social</label><input class="form-control" name="nombres" required></div>
+                  <div class="col-md-6"><label class="form-label">Apellidos (si aplica)</label><input class="form-control" name="apellidos"></div>
+                  
+<div class="col-md-4">
+  <label class="form-label">Tipo ID</label>
+  <select class="form-select" name="tipo_id">
+    <option value="">Seleccione…</option>
+    <option value="CC">Cédula de ciudadanía (CC)</option>
+    <option value="TI">Tarjeta de Identidad (TI)</option>
+    <option value="CE">Cédula de extranjería (CE)</option>
+    <option value="NIT">NIT</option>
+    <option value="PAS">Pasaporte (PAS)</option>
+    <option value="RC">Registro civil (RC)</option>
+    <option value="NUIP">NUIP</option>
+    <option value="PPT">Permiso por Protección Temporal (PPT)</option>
+    <option value="PEP">Permiso Especial de Permanencia (PEP)</option>
+    <option value="SC">Salvoconducto (SC)</option>
+    <option value="CD">Carné diplomático (CD)</option>
+    <option value="SD">Sin identificación (SD)</option>
+  </select>
+</div>
+
+                  <div class="col-md-8"><label class="form-label">Número ID</label><input class="form-control" name="numero_id"></div>
+                  <div class="col-md-6"><label class="form-label">Correo</label><input class="form-control" name="email" type="email"></div>
+                  <div class="col-md-6"><label class="form-label">Teléfono</label><input class="form-control" name="telefono"></div>
+                  <div class="col-12"><label class="form-label">Dirección</label><input class="form-control" name="direccion"></div>
+                  <div class="col-12 d-flex gap-2 mt-2">
+                    <button class="btn btn-primary" type="submit">Agregar</button>
+                  </div>
+                </form>
+              </div>
+            </div>
+          </div>
+
+          <div class="col-12">
+            <div class="card shadow-soft">
+              <div class="card-body">
+                <h6 class="card-title">Listado de partes</h6>
+                <div class="table-responsive">
+                  <table class="table table-dark table-striped align-middle mb-0">
+                    <thead><tr><th>Rol</th><th>Nombre</th><th>Identificación</th><th>Contacto</th></tr></thead>
+                    <tbody id="partiesTable"><tr><td colspan="4" class="text-center text-muted">Sin registros</td></tr></tbody>
+                  </table>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="d-flex justify-content-between mt-3">
+          <div></div>
+          <div class="d-flex gap-2">
+            <button class="btn btn-outline-light" data-prev disabled>Atrás</button>
+            <button class="btn btn-primary" data-next>Continuar</button>
+          </div>
+        </div>
+      </section>
+
+      <!-- STEP 2: INTRO -->
+      <section class="step" data-step="2">
+        <div class="row g-3">
+          <div class="col-lg-7">
+            <div class="card shadow-soft h-100">
+              <div class="card-body">
+                <div class="d-flex justify-content-between align-items-center mb-2">
+                  <h5 class="card-title mb-0">Introducción</h5>
+                </div>
+                <textarea id="introTxt" class="form-control" rows="10" placeholder="La intro se autocompone con las partes…"></textarea>
+                <div class="form-text">Al guardar, se reemplazarán marcadores como <code>XXXX</code> o “los accionados” por los datos reales.</div>
+                <div class="mt-3 d-flex gap-2">
+                  <button id="saveIntroBtn" class="btn btn-primary">Guardar</button>
+                  <button id="autoIntroBtn" class="btn btn-outline-light">Autocompletar desde partes</button>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="col-lg-5">
+            <div class="card shadow-soft h-100">
+              <div class="card-body">
+                <h6 class="card-title">Notificaciones & Firmas (auto)</h6>
+                <div class="row g-2">
+                  <div class="col-12">
+                    <label class="form-label">Notificaciones</label>
+                    <pre id="notifBox" class="monospace scrollbox border rounded p-2">—</pre>
+                  </div>
+                  <div class="col-12">
+                    <label class="form-label">Firmas</label>
+                    <pre id="firmasBox" class="monospace scrollbox border rounded p-2">—</pre>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="d-flex justify-content-between mt-3">
+          <button class="btn btn-outline-light" data-prev>Atrás</button>
+          <div class="d-flex gap-2">
+            <button class="btn btn-primary" data-next>Continuar</button>
+          </div>
+        </div>
+      </section>
+
+      <!-- STEP 3: HECHOS -->
+      <section class="step" data-step="3">
+        <div class="row g-3">
+          <div class="col-lg-6">
+            <div class="card shadow-soft h-100">
+              <div class="card-body">
+                <h5 class="card-title">Hechos (usuario)</h5>
+                <textarea id="hechosUser" class="form-control" rows="12" placeholder="Escribe los hechos en orden cronológico…"></textarea>
+                <div class="mt-3 d-flex gap-2">
+                  <button id="saveHechosBtn" class="btn btn-primary">Guardar</button>
+                  <button id="improveHechosBtn" class="btn btn-outline-light">Mejorar con IA</button>
+                </div>
+                <div class="small-help mt-2">Al guardar, el backend intentará mejorar automáticamente.</div>
+              </div>
+            </div>
+          </div>
+          <div class="col-lg-6">
+            <div class="card shadow-soft h-100">
+              <div class="card-body">
+                <h6 class="card-title">Hechos (IA)</h6>
+                <pre id="hechosAI" class="monospace scrollbox border rounded p-2">—</pre>
+                <div class="mt-2 d-flex gap-2">
+                  <button class="btn btn-outline-light btn-sm" id="approveHechosAI">Aprobar IA</button>
+                  <button class="btn btn-outline-light btn-sm" id="approveHechosUser">Aprobar Usuario</button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="d-flex justify-content-between mt-3">
+          <button class="btn btn-outline-light" data-prev>Atrás</button>
+          <div class="d-flex gap-2">
+            <button class="btn btn-primary" data-next>Continuar</button>
+          </div>
+        </div>
+      </section>
+
+      <!-- STEP 4: PRUEBAS -->
+      <section class="step" data-step="4">
+        <div class="row g-3">
+          <div class="col-lg-6">
+            <div class="card shadow-soft h-100">
+              <div class="card-body">
+                <h5 class="card-title">Pruebas y Anexos</h5>
+                <textarea id="pruebasTxt" class="form-control" rows="12" placeholder="Un ítem por línea: tipo — emisor — fecha — descriptor…"></textarea>
+                <div class="mt-3 d-flex gap-2">
+                  <button id="savePruebasBtn" class="btn btn-primary">Guardar</button>
+                </div>
+                <div class="small-help mt-2">El sistema normaliza esta lista al guardar.</div>
+              </div>
+            </div>
+          </div>
+          <div class="col-lg-6">
+            <div class="card shadow-soft h-100">
+              <div class="card-body">
+                <h6 class="card-title">Vista (IA)</h6>
+                <pre id="pruebasAI" class="monospace scrollbox border rounded p-2">—</pre>
+                <div class="mt-2 d-flex gap-2">
+                  <button class="btn btn-outline-light btn-sm" id="approvePruebasAI">Aprobar IA</button>
+                  <button class="btn btn-outline-light btn-sm" id="approvePruebasUser">Aprobar Usuario</button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="d-flex justify-content-between mt-3">
+          <button class="btn btn-outline-light" data-prev>Atrás</button>
+          <div class="d-flex gap-2">
+            <button class="btn btn-primary" data-next>Continuar</button>
+          </div>
+        </div>
+      </section>
+
+      <!-- STEP 5: PRETENSIONES -->
+      <section class="step" data-step="5">
+        <div class="row g-3">
+          <div class="col-lg-6">
+            <div class="card shadow-soft h-100">
+              <div class="card-body">
+                <h5 class="card-title">Pretensiones</h5>
+                <textarea id="pretTxt" class="form-control" rows="12" placeholder="Lista numerada; órdenes claras y NO económicas…"></textarea>
+                <div class="mt-3 d-flex gap-2">
+                  <button id="savePretBtn" class="btn btn-primary">Guardar</button>
+                </div>
+                <div class="small-help mt-2">Prohibido pedir pagos, indemnizaciones o montos económicos.</div>
+              </div>
+            </div>
+          </div>
+          <div class="col-lg-6">
+            <div class="card shadow-soft h-100">
+              <div class="card-body">
+                <h6 class="card-title">Sugerencias (IA)</h6>
+                <pre id="pretAI" class="monospace scrollbox border rounded p-2">—</pre>
+                <div class="mt-2 d-flex gap-2">
+                  <button class="btn btn-outline-light btn-sm" id="approvePretAI">Aprobar IA</button>
+                  <button class="btn btn-outline-light btn-sm" id="approvePretUser">Aprobar Usuario</button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="d-flex justify-content-between mt-3">
+          <button class="btn btn-outline-light" data-prev>Atrás</button>
+          <div class="d-flex gap-2">
+            <button class="btn btn-primary" data-next>Continuar</button>
+          </div>
+        </div>
+      </section>
+
+      <!-- STEP 6: CADENA IA -->
+      <section class="step" data-step="6">
+        <div class="card shadow-soft">
+          <div class="card-body">
+            <div class="d-flex justify-content-between align-items-center mb-3">
+              <div>
+                <h5 class="card-title mb-0">Cadena automática: Derechos → Fund. Jurídicos → Fund. de Derecho → REF</h5>
+                <div class="small-help">Necesita <strong>Hechos</strong> (mejorados) y ayuda de <em>Pruebas</em> si existen.</div>
+              </div>
+              <div class="d-flex gap-2">
+                <button id="runChainBtn" class="btn btn-primary">Generar cadena IA</button>
+                <button id="detectRightsBtn" class="btn btn-outline-light">Detectar derechos</button>
+              </div>
+            </div>
+
+            <div class="row g-3">
+              <div class="col-lg-6">
+                <label class="form-label">Derechos vulnerados</label>
+                <pre id="dvBox" class="monospace scrollbox border rounded p-2">—</pre>
+                <div class="mt-2 d-flex gap-2">
+                  <button class="btn btn-outline-light btn-sm" data-approve="derechos_vulnerados" data-source="ai">Aprobar IA</button>
+                  <button class="btn btn-outline-light btn-sm" data-approve="derechos_vulnerados" data-source="user">Aprobar Usuario</button>
+                </div>
+              </div>
+              <div class="col-lg-6">
+                <label class="form-label">Fundamentos jurídicos</label>
+                <pre id="fjBox" class="monospace scrollbox border rounded p-2">—</pre>
+                <div class="mt-2 d-flex gap-2">
+                  <button class="btn btn-outline-light btn-sm" data-approve="fundamentos_juridicos" data-source="ai">Aprobar IA</button>
+                  <button class="btn btn-outline-light btn-sm" data-approve="fundamentos_juridicos" data-source="user">Aprobar Usuario</button>
+                </div>
+              </div>
+              <div class="col-lg-6">
+                <label class="form-label">Fundamentos de derecho</label>
+                <pre id="fdBox" class="monospace scrollbox border rounded p-2">—</pre>
+                <div class="mt-2 d-flex gap-2">
+                  <button class="btn btn-outline-light btn-sm" data-approve="fundamentos_de_derecho" data-source="ai">Aprobar IA</button>
+                  <button class="btn btn-outline-light btn-sm" data-approve="fundamentos_de_derecho" data-source="user">Aprobar Usuario</button>
+                </div>
+              </div>
+              <div class="col-lg-6">
+                <label class="form-label">REF</label>
+                <pre id="refBox" class="monospace scrollbox border rounded p-2">—</pre>
+                <div class="mt-2 d-flex gap-2">
+                  <button class="btn btn-outline-light btn-sm" data-approve="ref" data-source="ai">Aprobar IA</button>
+                  <button class="btn btn-outline-light btn-sm" data-approve="ref" data-source="user">Aprobar Usuario</button>
+                </div>
+              </div>
+            </div>
+
+            <div class="mt-3">
+              <h6>Derechos detectados</h6>
+              <ul id="rightsList" class="list-inline small mb-0"></ul>
+            </div>
+          </div>
+        </div>
+
+        <div class="d-flex justify-content-between mt-3">
+          <button class="btn btn-outline-light" data-prev>Atrás</button>
+          <div class="d-flex gap-2">
+            <button class="btn btn-primary" data-next>Continuar</button>
+          </div>
+        </div>
+      </section>
+
+      <!-- STEP 7: COMPOSE -->
+      <section class="step" data-step="7">
+        <div class="card shadow-soft">
+          <div class="card-body text-center">
+            <h5 class="card-title mb-3">¡La tutela está lista!</h5>
+            <p class="mb-4">Revisa una última vez el contenido y expórtalo a Word.</p>
+            <div class="d-flex justify-content-center gap-2">
+              <button id="previewBtn" class="btn btn-outline-light">Vista previa</button>
+              <button id="exportDocxBtn" class="btn btn-primary">Exportar .docx</button>
+            </div>
+          </div>
+        </div>
+
+        <div class="d-flex justify-content-between mt-3">
+          <button class="btn btn-outline-light" data-prev>Atrás</button>
+          <div></div>
+        </div>
+</section>
+
+    </div>
+  </main>
+
+  <!-- PREVIEW MODAL (scrollable) -->
+  <div class="modal fade" id="previewModal" tabindex="-1" aria-labelledby="previewLabel" aria-hidden="true">
+    <div class="modal-dialog modal-xl modal-dialog-scrollable">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="previewLabel">Vista previa del documento</h5>
+          <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Cerrar"></button>
+        </div>
+        <div class="modal-body">
+          <pre id="previewBody" class="monospace"></pre>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Toasts -->
+  <div class="position-fixed bottom-0 end-0 p-3" style="z-index:1100">
+    <div id="appToast" class="toast" role="alert" aria-live="assertive" aria-atomic="true">
+      <div class="toast-header bg-dark text-white">
+        <strong class="me-auto">Aviso</strong>
+        <small>Wizard</small>
+        <button type="button" class="btn-close btn-close-white ms-2 mb-1" data-bs-dismiss="toast" aria-label="Close"></button>
+      </div>
+      <div class="toast-body" id="toastBody">—</div>
+    </div>
+  </div>
+
+  <!-- Spinner overlay -->
+  <div id="spinner" class="position-fixed top-0 start-0 w-100 h-100 d-none" style="background:rgba(0,0,0,.45); z-index:1200">
+    <div class="d-flex align-items-center justify-content-center h-100">
+      <div class="spinner-border text-light" role="status"><span class="visually-hidden">Cargando…</span></div>
+    </div>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+  <script>
+    const BASE_API = "/wizard";
+
+    
+    // ===== Tema (🌙/☀️) =====
+    const themeBtn = document.getElementById("themeBtn");
+    const themeLabel = document.getElementById("themeLabel");
+    const icoMoon = document.getElementById("icoMoon");
+    const icoSun  = document.getElementById("icoSun");
+
+    function applyTheme(theme){
+      const root = document.documentElement;
+      root.setAttribute("data-theme", theme);
+      try{ localStorage.setItem("theme", theme); }catch{}
+      const isLight = theme === "light";
+      if(icoSun)  icoSun.style.display  = isLight ? "block" : "none";
+      if(icoMoon) icoMoon.style.display = isLight ? "none"  : "block";
+      if(themeLabel) themeLabel.textContent = isLight ? "Light" : "Dark";
+    }
+
+    (function initTheme(){
+      let saved = null;
+      try{ saved = localStorage.getItem("theme"); }catch{ saved = null; }
+      if(saved){ applyTheme(saved); }
+      else{
+        const preferLight = window.matchMedia && window.matchMedia('(prefers-color-scheme: light)').matches;
+        applyTheme(preferLight ? "light" : "dark");
+      }
+    })();
+
+    if(themeBtn){
+      themeBtn.addEventListener("click", ()=>{
+        const curr = document.documentElement.getAttribute("data-theme") || "dark";
+        applyTheme(curr === "dark" ? "light" : "dark");
+      });
+    }
+// ===== Helpers UI =====
+    const $ = (sel, ctx=document) => ctx.querySelector(sel);
+    const $$ = (sel, ctx=document) => Array.from(ctx.querySelectorAll(sel));
+    const toast = new bootstrap.Toast($('#appToast'), {delay:3500});
+    function showToast(msg){ $('#toastBody').textContent = msg; toast.show(); }
+    function setLoading(on){ $('#spinner').classList.toggle('d-none', !on); }
+    function esc(s){ return String(s ?? ''); }
+    function setProgress(step){
+      const pct = Math.round((step-1) / 6 * 100) || 1;
+      $('#progressBar').style.width = Math.max(pct, 14) + '%';
+      $$('.nav-pills .nav-link').forEach((b,i)=> b.classList.toggle('active', (i+1)===step));
+    }
+    function gotoStep(n){
+      $$('.step').forEach(sec => sec.classList.toggle('active', Number(sec.dataset.step)===n));
+      setProgress(n);
+      window.scrollTo({top:0, behavior:'instant'});
+      currentStep = n;
+    }
+
+    // ===== State =====
+    let CASE_ID = null;
+    let currentStep = 1;
+
+    // ===== API =====
+    async function createCase(){
+      const r = await fetch(BASE_API + '/case', {method:'POST'});
+      if(!r.ok) throw new Error('No se pudo crear el caso');
+      const j = await r.json();
+      CASE_ID = j.case_id;
+      $('#caseBadge').textContent = 'Caso ' + CASE_ID;
+      showToast('Caso creado: ' + CASE_ID);
+      // Load initial bundle to populate auto fields
+      await refreshBundle();
+    }
+
+    async function refreshBundle(){
+      if(!CASE_ID) return;
+      const r = await fetch(BASE_API + '/case/'+CASE_ID);
+      if(!r.ok) throw new Error('No se pudo leer el caso');
+      const data = await r.json();
+
+      // Tabla de partes
+      const tbody = $('#partiesTable');
+      tbody.innerHTML = '';
+      const rows = data.parties;
+      if(!rows.length){
+        tbody.innerHTML = '<tr><td colspan="4" class="text-center text-muted">Sin registros</td></tr>';
+      }else{
+        for(const p of rows){
+          const nombre = esc((p.nombres||'') + ' ' + (p.apellidos||''));
+          const ident = esc((p.tipo_id||'') + ' ' + (p.numero_id||''));
+          const contacto = [p.email, p.telefono, p.direccion].filter(Boolean).join(' | ');
+          const tr = document.createElement('tr');
+          tr.innerHTML = '<td>'+esc(p.role)+'</td><td>'+nombre+'</td><td>'+ident+'</td><td>'+esc(contacto)+'</td>';
+          tbody.appendChild(tr);
+        }
+      }
+
+      // Secciones (structured)
+      const s = await (await fetch(BASE_API + '/case/'+CASE_ID+'/compose-structured')).json();
+      $('#introTxt').value = esc(s.auto.intro || '');
+      $('#notifBox').textContent = esc(s.auto.notificaciones || '');
+      $('#firmasBox').textContent = esc(s.auto.firmas || '');
+
+      $('#hechosUser').value = esc(s.hechos.user || '');
+      $('#hechosAI').textContent = esc(s.hechos.ai || '');
+
+      $('#pruebasTxt').value = esc(s.pruebas_y_anexos.user || '');
+      $('#pruebasAI').textContent = esc(s.pruebas_y_anexos.ai || '');
+
+      $('#pretTxt').value = esc(s.pretensiones.user || '');
+      $('#pretAI').textContent = esc(s.pretensiones.ai || '');
+
+      $('#dvBox').textContent  = esc(s.generados.derechos_vulnerados.ai || s.generados.derechos_vulnerados.final || s.generados.derechos_vulnerados.user || '');
+      $('#fjBox').textContent  = esc(s.generados.fundamentos_juridicos.ai || s.generados.fundamentos_juridicos.final || s.generados.fundamentos_juridicos.user || '');
+      $('#fdBox').textContent  = esc(s.generados.fundamentos_de_derecho.ai || s.generados.fundamentos_de_derecho.final || s.generados.fundamentos_de_derecho.user || '');
+      $('#refBox').textContent = esc(s.generados.ref.ai || s.generados.ref.final || s.generados.ref.user || '');
+    }
+
+    async function upsertParty(role, formEl){
+      const fd = new FormData(formEl);
+      const payload = Object.fromEntries(fd.entries());
+      payload.role = role;
+      setLoading(true);
+      try{
+        const r = await fetch(BASE_API + '/case/'+CASE_ID+'/party', {
+          method:'POST',
+          headers:{'Content-Type':'application/json'},
+          body: JSON.stringify(payload)
+        });
+        if(!r.ok){ const e = await r.json().catch(()=>({detail:'Error'})); throw new Error(e.detail || 'Error guardando parte'); }
+        await refreshBundle();
+        formEl.reset();
+      } finally { setLoading(false); }
+    }
+
+    async function saveSection(name, text){
+      setLoading(true);
+      try{
+        const r = await fetch(BASE_API + '/case/'+CASE_ID+'/section/'+name, {
+          method:'POST',
+          headers:{'Content-Type':'application/json'},
+          body: JSON.stringify({ user_text: text })
+        });
+        const j = await r.json().catch(()=>({}));
+        if(!r.ok){ throw new Error(j.detail || 'Error guardando ' + name); }
+        await refreshBundle();
+        showToast('Guardado ✓');
+      } catch(e){
+        showToast(e.message);
+      } finally { setLoading(false); }
+    }
+
+    async function improveSection(name){
+      setLoading(true);
+      try{
+        const r = await fetch(BASE_API + '/case/'+CASE_ID+'/section/'+name+'/improve', { method:'POST' });
+        const j = await r.json();
+        if(!r.ok){ throw new Error(j.detail || 'Error mejorando '+name); }
+        await refreshBundle();
+        showToast('Mejorado por IA ✓');
+      } catch(e){ showToast(e.message); }
+      finally{ setLoading(false); }
+    }
+
+    async function approveSection(name, source){
+      setLoading(true);
+      try{
+        const r = await fetch(BASE_API + '/case/'+CASE_ID+'/section/'+name+'/approve', {
+          method:'POST', headers:{'Content-Type':'application/json'},
+          body: JSON.stringify({ source })
+        });
+        const j = await r.json();
+        if(!r.ok){ throw new Error(j.detail || 'Error aprobando'); }
+        await refreshBundle();
+        showToast('Aprobado ✓ ('+name+')');
+      } catch(e){ showToast(e.message); }
+      finally{ setLoading(false); }
+    }
+
+    async function runChain(){
+      setLoading(true);
+      try{
+        const r = await fetch(BASE_API + '/case/'+CASE_ID+'/chain/autogen', { method:'POST' });
+        const j = await r.json();
+        if(!r.ok){ throw new Error(j.detail || 'Error generando cadena'); }
+        await refreshBundle();
+        showToast('Cadena generada ✓');
+      } catch(e){ showToast(e.message); }
+      finally{ setLoading(false); }
+    }
+
+    async function detectRights(){
+      setLoading(true);
+      try{
+        const r = await fetch(BASE_API + '/case/'+CASE_ID+'/rights/detect', { method:'POST' });
+        const j = await r.json();
+        if(!r.ok){ throw new Error(j.detail || 'Error detectando'); }
+        const ul = $('#rightsList'); ul.innerHTML='';
+        (j.rights||[]).forEach(rt => {
+          const li = document.createElement('li'); li.className='list-inline-item badge badge-soft'; li.textContent=rt;
+          ul.appendChild(li);
+        });
+        showToast('Derechos detectados: '+(j.rights||[]).join(', '));
+      } catch(e){ showToast(e.message); }
+      finally{ setLoading(false); }
+    }
+
+    async function ensure(name){
+      setLoading(true);
+      try{
+        const r = await fetch(BASE_API + '/case/'+CASE_ID+'/ensure/'+name);
+        const j = await r.json();
+        if(!r.ok){ throw new Error(j.detail || 'Error en ensure'); }
+        await refreshBundle();
+        showToast('Re-generado: '+name);
+      } catch(e){ showToast(e.message); }
+      finally{ setLoading(false); }
+    }
+
+    async function previewFinal(){
+      setLoading(true);
+      try{
+        const r = await fetch(BASE_API + '/case/'+CASE_ID+'/compose-final');
+        const j = await r.json();
+        if(!r.ok){ throw new Error(j.detail || 'No se pudo componer'); }
+        $('#previewBody').textContent = esc(j.full_text || '(vacío)');
+        const modal = new bootstrap.Modal($('#previewModal'));
+        modal.show();
+      } catch(e){ showToast(e.message); }
+      finally{ setLoading(false); }
+    }
+
+    async function exportDocx(){
+      setLoading(true);
+      try{
+        const r = await fetch(BASE_API + '/case/'+CASE_ID+'/export-docx', { method:'POST' });
+        const j = await r.json();
+        if(!r.ok){ throw new Error(j.detail || 'Error exportando'); }
+        if(j.docx_url){ window.open(j.docx_url, '_blank'); }
+      } catch(e){ showToast(e.message); }
+      finally{ setLoading(false); }
+    }
+    async function exportJson(){
+      setLoading(true);
+      try{
+        const r = await fetch(BASE_API + '/case/'+CASE_ID+'/export-docx', { method:'POST' });
+        const j = await r.json();
+        if(!r.ok){ throw new Error(j.detail || 'Error exportando'); }
+        if(j.json_url){ window.open(j.json_url, '_blank'); }
+      } catch(e){ showToast(e.message); }
+      finally{ setLoading(false); }
+    }
+
+    // ===== Events =====
+    $('#newCaseBtn').addEventListener('click', async ()=>{
+      setLoading(true);
+      try{
+        await createCase();
+        gotoStep(1);
+      } finally { setLoading(false); }
+    });
+
+    // Wizard nav buttons
+    $$('[data-next]').forEach(btn => btn.addEventListener('click', () => gotoStep(Math.min(currentStep+1, 7))));
+    $$('[data-prev]').forEach(btn => btn.addEventListener('click', () => gotoStep(Math.max(currentStep-1, 1))));
+    $$('.nav-pills .nav-link').forEach(btn => btn.addEventListener('click', (e)=>{
+      const n = Number(e.currentTarget.dataset.goto||'1'); gotoStep(n);
+    }));
+
+    // Partes
+    $('#formAccionante').addEventListener('submit', async (e)=>{
+      e.preventDefault();
+      if(!CASE_ID) return showToast('Crea primero un caso');
+      await upsertParty('accionante', e.currentTarget);
+    });
+    $('#formAccionado').addEventListener('submit', async (e)=>{
+      e.preventDefault();
+      if(!CASE_ID) return showToast('Crea primero un caso');
+      await upsertParty('accionado', e.currentTarget);
+    });
+    $('#refreshIntroBtn').addEventListener('click', async ()=>{
+      if(!CASE_ID) return;
+      setLoading(true);
+      try{
+        await fetch(BASE_API + '/case/'+CASE_ID+'/intro/refresh', { method:'POST' });
+        await refreshBundle();
+        showToast('Introducción actualizada a partir de las partes');
+      } finally { setLoading(false); }
+    });
+
+    // Intro
+    $('#saveIntroBtn').addEventListener('click', async ()=>{
+      await saveSection('intro', $('#introTxt').value);
+    });
+    $('#autoIntroBtn').addEventListener('click', async ()=>{
+      if(!CASE_ID) return;
+      setLoading(true);
+      try{
+        await fetch(BASE_API + '/case/'+CASE_ID+'/intro/refresh', { method:'POST' });
+        await refreshBundle();
+      } finally { setLoading(false); }
+    });
+
+    // Hechos
+    $('#saveHechosBtn').addEventListener('click', async ()=>{
+      await saveSection('hechos', $('#hechosUser').value);
+    });
+    $('#improveHechosBtn').addEventListener('click', async ()=>{
+      await improveSection('hechos');
+    });
+    $('#approveHechosAI').addEventListener('click', async ()=>{
+      await approveSection('hechos','ai');
+    });
+    $('#approveHechosUser').addEventListener('click', async ()=>{
+      await approveSection('hechos','user');
+    });
+
+    // Pruebas y anexos
+    $('#savePruebasBtn').addEventListener('click', async ()=>{
+      await saveSection('pruebas_y_anexos', $('#pruebasTxt').value);
+    });
+    $('#approvePruebasAI').addEventListener('click', async ()=>{
+      await approveSection('pruebas_y_anexos','ai');
+    });
+    $('#approvePruebasUser').addEventListener('click', async ()=>{
+      await approveSection('pruebas_y_anexos','user');
+    });
+
+    // Pretensiones
+    $('#savePretBtn').addEventListener('click', async ()=>{
+      try{
+        await saveSection('pretensiones', $('#pretTxt').value);
+      }catch(e){}
+    });
+    $('#approvePretAI').addEventListener('click', async ()=>{
+      await approveSection('pretensiones','ai');
+    });
+    $('#approvePretUser').addEventListener('click', async ()=>{
+      await approveSection('pretensiones','user');
+    });
+
+    // Cadena IA
+    $('#runChainBtn').addEventListener('click', runChain);
+    $('#detectRightsBtn').addEventListener('click', detectRights);
+    $$('[data-approve]').forEach(btn => btn.addEventListener('click', async (e)=>{
+      const name = e.currentTarget.dataset.approve;
+      const source = e.currentTarget.dataset.source;
+      await approveSection(name, source);
+    }));
+
+    // Compose & Export
+    $('#previewBtn').addEventListener('click', previewFinal);
+    $('#exportDocxBtn').addEventListener('click', exportDocx);
+    if($('#exportJsonBtn')) $('#exportJsonBtn').addEventListener('click', exportJson);
+// Ensures
+    if($('#ensureDVBtn')) $('#ensureDVBtn').addEventListener('click', ()=> ensure('derechos_vulnerados'));
+    if($('#ensureFJBtn')) $('#ensureFJBtn').addEventListener('click', ()=> ensure('fundamentos_juridicos'));
+    if($('#ensureFDBtn')) $('#ensureFDBtn').addEventListener('click', ()=> ensure('fundamentos_de_derecho'));
+    if($('#ensureREFBtn')) $('#ensureREFBtn').addEventListener('click', ()=> ensure('ref'));
+
+    // ===== Init =====
+    (async ()=>{
+      try{
+        await createCase();
+        gotoStep(1);
+      } catch(e){
+        showToast('No se pudo iniciar el caso');
+      }
+    })();
+  </script>
+</body>
+</html>

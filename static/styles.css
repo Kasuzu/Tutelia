@@ -1,0 +1,376 @@
+/* ==========================================================================
+   Tema dual (dark/light) – UI base monocromática
+   - Usa variables para bordes, fondos y sombras en ambos temas
+   - Evita valores "hardcoded" de blanco translúcido en light (se perdían)
+   ========================================================================== */
+
+/* -------------------- Variables (tema por defecto: DARK) ------------------ */
+:root{
+  --bg: #000;                   /* fondo principal */
+  --fg: #fff;                   /* texto principal */
+  --line: rgba(255,255,255,0.18);
+  --line-strong: rgba(255,255,255,0.32);
+  --soft: rgba(255,255,255,0.06);  /* superficies sutiles (paneles) */
+  --shadow: 0 10px 30px rgba(255,255,255,0.06);
+  --radius: 16px;
+
+  /* superficies semánticas */
+  --surface: var(--bg);         /* tarjetas por defecto comparten fondo */
+  --chat-bg: var(--bg);
+  --code-bg: rgba(255,255,255,0.08);
+
+  /* botones e inputs */
+  --btn-outline-border: var(--fg);
+  --btn-outline-fg: var(--fg);
+  --btn-outline-hover-bg: var(--fg);
+  --btn-outline-hover-fg: var(--bg);
+
+  --btn-light-bg: #fff;
+  --btn-light-fg: #000;
+  --btn-light-border: var(--line-strong);
+  --btn-light-hover-filter: brightness(92%);
+
+  --input-bg: var(--bg);
+  --input-fg: var(--fg);
+  --placeholder: rgba(255,255,255,0.55);
+
+  /* mensajes del chat */
+  --msg-user-bg: #000;  /* usuario: negro sobre blanco (texto blanco) -> invertimos colores */
+  --msg-user-fg: #fff;
+  --msg-user-border: var(--line-strong);
+
+  --msg-assist-bg: #fff; /* asistente: blanco sobre negro */
+  --msg-assist-fg: #000;
+  --msg-assist-border: var(--line);
+}
+
+/* ------------------------------- Tema LIGHT ------------------------------- */
+:root[data-theme="light"]{
+  --bg: #fff;
+  --fg: #000;
+  --line: rgba(0,0,0,0.18);
+  --line-strong: rgba(0,0,0,0.32);
+  --soft: rgba(0,0,0,0.06);
+  --shadow: 0 10px 30px rgba(0,0,0,0.06);
+
+  --surface: var(--bg);
+  --chat-bg: var(--bg);
+  --code-bg: rgba(0,0,0,0.08);
+
+  --btn-outline-border: var(--fg);
+  --btn-outline-fg: var(--fg);
+  --btn-outline-hover-bg: var(--fg);
+  --btn-outline-hover-fg: var(--bg);
+
+  --btn-light-bg: #fff;                 /* botón claro visible en light por el borde */
+  --btn-light-fg: #000;
+  --btn-light-border: var(--line-strong);
+  --btn-light-hover-filter: brightness(96%);
+
+  --input-bg: #fff;
+  --input-fg: #000;
+  --placeholder: rgba(0,0,0,0.55);
+
+  /* mensajes (mantenemos inversión user/bot para contraste narrativo) */
+  --msg-user-bg: #000;
+  --msg-user-fg: #fff;
+  --msg-user-border: var(--line-strong);
+
+  --msg-assist-bg: #fff;
+  --msg-assist-fg: #000;
+  --msg-assist-border: var(--line);
+}
+
+/* ------------------------------- Reset base ------------------------------- */
+* { box-sizing: border-box; }
+html, body { height: 100%; }
+body{
+  margin: 0;
+  background: var(--bg);
+  color: var(--fg);
+  font: 15px/1.5 system-ui, -apple-system, Segoe UI, Roboto, Ubuntu, Cantarell, Helvetica, Arial, "Apple Color Emoji","Segoe UI Emoji";
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+::selection{ background: rgba(127,127,127,.35); }
+a{ color: var(--fg); text-decoration: none; border-bottom: 1px solid transparent; }
+a:hover{ border-bottom-color: var(--fg); }
+
+/* ------------------------------ Layout & blocks --------------------------- */
+.container{ width: min(1100px, 92%); margin: 0 auto; }
+
+.navbar{
+  position: sticky; top: 0; z-index: 20;
+  background: var(--bg);
+  border-bottom: 1px solid var(--line);
+  backdrop-filter: saturate(140%) blur(4px);
+}
+.navbar-inner{
+  display: flex; align-items: center; justify-content: space-between;
+  height: 56px;
+  gap: .5rem;
+}
+.brand{ font-weight: 700; letter-spacing: .3px; }
+
+.badge{
+  border:1px dashed var(--fg);
+  padding:.15rem .5rem; border-radius:999px; font-weight:600;
+}
+
+.hero{ padding: 56px 0; border-bottom:1px solid var(--line); }
+.lead{ opacity:.9; }
+
+.grid{ display:grid; gap: 24px; }
+@media (min-width: 980px){ .grid-2{ grid-template-columns: 1fr 1fr; } .grid-7-5{ grid-template-columns: 7fr 5fr; gap:32px; } }
+
+.row{ display: grid; gap: 12px; }
+@media (min-width: 680px){ .row-3 { grid-template-columns: 1fr 1fr 1fr; } }
+
+.section{ padding: 48px 0; }
+
+/* ------------------------------- Cards & panel ---------------------------- */
+.card{
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow);
+}
+.card-body{ padding: 20px; }
+.card-title{ margin: 0 0 .35rem 0; }
+
+.panel{
+  background: var(--soft);
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  padding: 16px;
+}
+
+/* -------------------------------- Buttons -------------------------------- */
+.btn{
+  appearance: none;
+  border: 1px solid transparent;
+  padding: .85rem 1.1rem;
+  border-radius: 999px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: transform .08s ease, background .15s ease, color .15s ease, border-color .15s ease, filter .15s ease;
+}
+.btn:active{ transform: translateY(1px) scale(0.98); }
+
+.btn-light{
+  background: var(--btn-light-bg);
+  color: var(--btn-light-fg);
+  border-color: var(--btn-light-border);
+}
+.btn-light:hover{ filter: var(--btn-light-hover-filter); }
+
+.btn-outline{
+  background: transparent;
+  color: var(--btn-outline-fg);
+  border-color: var(--btn-outline-border);
+}
+.btn-outline:hover{
+  background: var(--btn-outline-hover-bg);
+  color: var(--btn-outline-hover-fg);
+}
+
+/* ------------------------------- Inputs ---------------------------------- */
+.label{ font-size:.8rem; opacity:.9; display:block; margin-bottom:.35rem; }
+
+.input, textarea, select{
+  width: 100%;
+  background: var(--input-bg);
+  color: var(--input-fg);
+  border: 1px solid var(--line);
+  border-radius: 12px;
+  padding: .75rem .9rem;
+  outline: none;
+  box-shadow: none;
+}
+.input::placeholder, textarea::placeholder{ color: var(--placeholder); }
+
+textarea{ min-height: 120px; resize: vertical; }
+
+.input:focus, textarea:focus, select:focus, .btn:focus, a:focus{
+  outline: 2px dashed var(--fg); outline-offset: 2px;
+}
+
+/* --------------------------------- Chat ---------------------------------- */
+.chat{
+  min-height: 50vh;
+  padding: 12px;
+  border-radius: var(--radius);
+  border:1px solid var(--line);
+  background: var(--chat-bg);
+  overflow-y: auto;
+}
+
+.msg{
+  padding: .9rem 1rem;
+  border-radius: 14px;
+  margin: .45rem 0;
+  border:1px solid var(--line);
+  box-shadow: var(--shadow);
+  white-space: normal;
+  word-wrap: break-word;
+}
+
+.msg.u{
+  background: var(--msg-user-bg);
+  color: var(--msg-user-fg);
+  border-color: var(--msg-user-border);
+}
+
+.msg.a{
+  background: var(--msg-assist-bg);
+  color: var(--msg-assist-fg);
+  border-color: var(--msg-assist-border);
+}
+
+/* Markdown (aplica sobre mensajes del asistente) */
+.msg.a h1,.msg.a h2,.msg.a h3{ margin:.2rem 0 .4rem 0 }
+.msg.a p{ margin:.4rem 0 }
+.msg.a code{
+  background: var(--code-bg);
+  padding:.1rem .3rem; border-radius:6px;
+}
+.msg.a pre{
+  background: var(--code-bg);
+  padding:.75rem; border-radius:8px; overflow:auto;
+}
+.msg.a ul,.msg.a ol{ padding-left:1.2rem; margin:.35rem 0 }
+.msg.a a{ color: var(--msg-assist-fg); border-bottom:1px solid var(--msg-assist-fg); }
+
+/* Animación de entrada */
+.msg.enter{ animation: fadeInUp .22s ease-out both; }
+@keyframes fadeInUp{ from{opacity:0; transform:translateY(6px)} to{opacity:1; transform:none} }
+
+/* ------------------------------- Sticky aside ----------------------------- */
+.sticky-col{
+  position: sticky;
+  top: 72px; /* despega la navbar */
+  max-height: calc(100vh - 84px);
+  overflow: auto;
+  padding-bottom: 8px;
+  scrollbar-width: thin;
+}
+.sticky-col::-webkit-scrollbar{ width: 10px; }
+.sticky-col::-webkit-scrollbar-thumb{
+  background: var(--line);
+  border-radius: 10px;
+}
+.sticky-col::-webkit-scrollbar-track{ background: transparent; }
+
+@media (max-width: 980px){
+  .sticky-col{
+    position: static;
+    max-height: none;
+    overflow: visible;
+  }
+}
+
+/* -------------------------------- Tables --------------------------------- */
+table{ width:100%; border-collapse: collapse; }
+th, td{ border:1px solid var(--line); padding:.65rem .75rem; }
+th{ text-align:left; }
+
+/* -------------------------------- Footer --------------------------------- */
+footer{
+  border-top:1px solid var(--line);
+  padding: 24px 0;
+  color: var(--fg);
+}
+
+/* ------------------------------- Utilities -------------------------------- */
+.muted{ opacity: .7; }
+.small{ font-size: .9rem; }
+.block{ display: block; }
+.center{ text-align:center; }
+
+.mt-1{ margin-top: .25rem; } .mt-2{ margin-top: .5rem; }
+.mt-3{ margin-top: .75rem; } .mt-4{ margin-top: 1rem; } .mt-5{ margin-top: 1.5rem; }
+.mb-0{ margin-bottom: 0; } .mb-2{ margin-bottom:.5rem; } .mb-3{ margin-bottom:.75rem; } .mb-4{ margin-bottom:1rem; }
+.gap-2{ gap:.5rem; } .gap-3{ gap:.75rem; } .gap-4{ gap:1rem; }
+
+/* ----------------------------- Nav / Theme btn ---------------------------- */
+.theme-toggle{
+  display:flex; align-items:center; gap:.5rem; cursor:pointer;
+  border:1px solid var(--line); border-radius:999px; padding:.4rem .6rem;
+  background: transparent; color: var(--fg);
+  transition: background .15s ease, color .15s ease, border-color .15s ease, transform .08s ease;
+}
+.theme-toggle:hover{ background: var(--soft); }
+.theme-toggle:active{ transform: translateY(1px) scale(0.98); }
+.theme-toggle svg{ width:18px; height:18px; display:block; }
+.theme-toggle span{ font-weight:700; }
+
+/* ----------------------------- Fancy feedback ----------------------------- */
+.badge.pulse{ animation: pulse 1.3s ease-out 2; }
+@keyframes pulse{ 0%{box-shadow:0 0 0 0 var(--line-strong)} 100%{box-shadow:0 0 0 24px rgba(0,0,0,0)} }
+
+.modal__content {
+  max-height: 80vh;
+  overflow: auto;          /* permite desplazamiento interno */
+  overscroll-behavior: contain;
+}
+.modal__body { max-height: calc(80vh - 120px); overflow: auto; }  /* si tienes header/footer */
+
+.modal__overlay { overflow: auto; }
+
+/* --- Modal scroll --- */
+.modal-body-scroll {
+  max-height: 80vh;           /* Ajusta si quieres más/menos alto */
+  overflow-y: auto;
+  padding-right: 8px;         /* Evita “saltos” por la barra de scroll */
+}
+
+/* --- Tabs dentro del modal --- */
+.modal-tabs {
+  display: flex;
+  gap: 8px;
+  border-bottom: 1px solid #E5E7EB; /* gris clarito */
+  margin-bottom: 12px;
+}
+
+.modal-tab-btn {
+  appearance: none;
+  background: transparent;
+  border: none;
+  border-bottom: 2px solid transparent;
+  padding: 10px 14px;
+  font-weight: 600;
+  cursor: pointer;
+  color: #374151;             /* gris 700 */
+}
+
+.modal-tab-btn[aria-selected="true"] {
+  color: #111827;             /* gris 900 */
+  border-bottom-color: #2563EB; /* azul */
+}
+
+.modal-tab-panel {
+  display: none;
+}
+
+.modal-tab-panel[data-active="true"] {
+  display: block;
+}
+
+/* Modal inicial (start) — ancho amplio y scroll cómodo */
+#startModal .modal__content{
+  width: min(900px, 94vw);   /* mismo ancho que tu .sheet */
+  max-height: 80vh;
+  overflow: hidden;          /* evita doble scroll en el borde */
+}
+
+#startModal .modal__body{
+  max-height: calc(80vh - 40px); /* ajusta si agregas header/footer */
+  overflow: auto;                 /* el scroll vive aquí */
+}
+
+/* Si prefieres que SOLO la lista scrollee, deja esto también */
+#startModal #casesList{
+  max-height: 60vh;
+  overflow: auto;
+}

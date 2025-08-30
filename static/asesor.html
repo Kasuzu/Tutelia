@@ -1,0 +1,496 @@
+<!doctype html>
+<html lang="es" data-theme="dark">
+<head>
+  <meta charset="utf-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <title>Asesor Jurídico (Tutela COL) – RAG + Memoria</title>
+  <link rel="stylesheet" href="styles.css"/>
+  <!-- Markdown + Sanitizer -->
+  <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/dompurify@3.1.7/dist/purify.min.js"></script>
+  <style>
+    /* Overrides & animaciones locales */
+    .chat{ position: relative; overflow-y:auto; }
+    .msg{ margin:.45rem 0; border-radius:14px; padding:.9rem 1rem; border:1px solid var(--line); }
+    .msg.u{ background:#000; color:#fff; border-color:var(--line-strong); }
+    .msg.a{ background:#fff; color:#000; border-color:var(--line); }
+    :root[data-theme="light"] .msg.u{ background:#000; color:#fff; }
+    :root[data-theme="light"] .msg.a{ background:#fff; color:#000; }
+    .msg.a h1,.msg.a h2,.msg.a h3{ margin:.2rem 0 .4rem 0 }
+    .msg.a p{ margin:.4rem 0 }
+    .msg.a code{ background:rgba(0,0,0,.08); padding:.1rem .3rem; border-radius:6px; }
+    .msg.a pre{
+      background:rgba(0,0,0,.08);
+      padding:.75rem;
+      border-radius:8px;
+      overflow:auto;
+      /* ——— Fix desbordes ——— */
+      white-space: pre-wrap;
+      word-break: break-word;
+      overflow-wrap: anywhere;
+    }
+    .msg.a ul,.msg.a ol{ padding-left:1.2rem; margin:.35rem 0 }
+    .msg.a a{ color:#000; border-bottom:1px solid #000; }
+    .msg.enter{ animation: fadeInUp .22s ease-out both; }
+    @keyframes fadeInUp{ from{opacity:0; transform:translateY(6px)} to{opacity:1; transform:none} }
+    .btn{ transition: transform .08s ease; }
+    .btn:active{ transform: translateY(1px) scale(0.98); }
+    .badge.pulse{ animation: pulse 1.3s ease-out 2; }
+    @keyframes pulse{ 0%{box-shadow:0 0 0 0 rgba(255,255,255,.35)} 100%{box-shadow:0 0 0 24px rgba(255,255,255,0)} }
+    .thinking{ font-style: italic; opacity:.9 }
+    .theme-toggle{ display:flex; align-items:center; gap:.5rem; cursor:pointer; border:1px solid var(--line); border-radius:999px; padding:.4rem .6rem; }
+    .theme-toggle svg{ width:18px; height:18px; display:block; }
+    .theme-toggle span{ font-weight:700; }
+    .navbar-inner{ gap: .75rem; }
+
+    /* ===== Code wrapper colapsable ===== */
+    .code-wrap{ position:relative; }
+    .code-wrap.collapsed pre{ max-height: 280px; }
+    .code-wrap pre{ max-height: 70vh; }
+    .code-actions{
+      position:absolute; top:8px; right:8px; display:flex; gap:6px;
+    }
+    .code-actions button{
+      font-size:.75rem; line-height:1; padding:.25rem .5rem; border-radius:999px;
+      border:1px solid #cbd5e1; background:#ffffff; color:#111827; cursor:pointer;
+    }
+    :root[data-theme="dark"] .code-actions button{
+      border-color:#334155; background:#0b1220; color:#e5e7eb;
+    }
+    .fade-bottom{
+      display:none; pointer-events:none; position:absolute; left:0; right:0; bottom:0; height:46px;
+      background: linear-gradient(to bottom, rgba(255,255,255,0), rgba(255,255,255,1));
+      border-bottom-left-radius:8px; border-bottom-right-radius:8px;
+    }
+    :root[data-theme="dark"] .fade-bottom{
+      background: linear-gradient(to bottom, rgba(0,0,0,0), rgba(0,0,0,.08));
+    }
+    .code-wrap.collapsed .fade-bottom{ display:block; }
+
+    /* Fuentes + visor */
+    .sources-list{ list-style:none; margin:0; padding:0; display:flex; flex-direction:column; gap:.6rem; }
+    .src-item{ border:1px solid var(--line); border-radius:10px; padding:.6rem .7rem; background: var(--bg-weak, #0b0b0b); }
+    .src-top{ display:flex; align-items:center; gap:.5rem; flex-wrap:wrap; }
+    .src-top a{ text-decoration:none; border-bottom:1px solid transparent; }
+    .src-top a:hover{ border-color: currentColor; }
+    .src-score{ font-size:.8rem; opacity:.8 }
+    .btn-link{ font-size:.8rem; border:1px solid var(--line); padding:.15rem .5rem; border-radius:999px; text-decoration:none; }
+    .viewer-box{ border:1px solid var(--line); border-radius:12px; overflow:hidden; }
+    .viewer-box iframe{ width:100%; height:42vh; border:0; background:#111; }
+  </style>
+</head>
+<body>
+  <!-- NAV -->
+  <nav class="navbar">
+    <div class="container navbar-inner">
+      <a class="brand" href="index.html">← Volver</a>
+      <span>Asesor Jurídico (Tutela, Colombia)</span>
+
+      <div style="display:flex; align-items:center; gap:.5rem; margin-left:auto">
+        <button id="themeBtn" class="theme-toggle" type="button" title="Cambiar tema">
+          <!-- Moon -->
+          <svg id="icoMoon" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+            <path d="M21 12.79A9 9 0 0 1 11.21 3 7 7 0 1 0 21 12.79z"/>
+          </svg>
+          <!-- Sun -->
+          <svg id="icoSun" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true" style="display:none">
+            <path d="M12 4V2m0 20v-2m8-8h2M2 12h2m13.657-6.343 1.414-1.414M4.929 19.071l1.414-1.414m0-11.314L4.93 4.93M19.071 19.07l-1.414-1.414M12 6a6 6 0 1 1 0 12A6 6 0 0 1 12 6z"/>
+          </svg>
+          <span id="themeLabel">Dark</span>
+        </button>
+        <span id="status" class="badge">Sin sesión</span>
+      </div>
+    </div>
+  </nav>
+
+  <!-- MAIN -->
+  <main class="container section">
+    <div class="grid grid-7-5">
+      <!-- Columna chat -->
+      <div>
+        <div id="chat" class="chat" aria-live="polite"></div>
+
+        <form id="form" class="mt-3" autocomplete="off">
+          <label class="label" for="q">Consulta</label>
+          <input id="q" class="input" placeholder="Ej.: ¿Cómo opera la subsidiariedad en mi caso?..." required/>
+
+          <div class="row mt-3">
+            <button class="btn btn-outline" type="submit">Preguntar</button>
+            <button id="newChat" class="btn btn-outline" type="button">Nueva conversación</button>
+            <button id="exportChat" class="btn btn-outline" type="button" title="Descargar historial">Exportar chat</button>
+          </div>
+
+          <p class="small muted mt-3">
+            El asesor usa RAG sobre tus documentos y recuerda el hilo. Si falta base, te dirá qué cargar en <code>/docs</code>.
+          </p>
+          <p class="small muted">
+            Aviso: Esto es apoyo informativo; no sustituye asesoría legal profesional.
+          </p>
+        </form>
+      </div>
+
+      <!-- Columna lateral (STICKY) -->
+      <aside>
+        <div class="sticky-col">
+          <div class="card">
+            <div class="card-body">
+              <h3 class="card-title">Sugerencias</h3>
+              <ul class="muted">
+                <li>Incluye palabras clave: “inmediatez”, “subsidiariedad”, “legitimación por activa”…</li>
+                <li>Pide un plan de acción (pasos y tiempos) si lo necesitas.</li>
+                <li>Para empezar de cero, usa <strong>Nueva conversación</strong>.</li>
+              </ul>
+            </div>
+          </div>
+
+          <div class="card mt-3">
+            <div class="card-body">
+              <h3 class="card-title">Fuentes de la última respuesta</h3>
+              <div id="sources" class="panel small muted">(sin fuentes todavía)</div>
+            </div>
+          </div>
+
+          <div class="card mt-3">
+            <div class="card-body">
+              <h3 class="card-title">Vista previa</h3>
+              <div class="viewer-box">
+                <iframe id="docViewer" title="Vista previa de la fuente"></iframe>
+              </div>
+            </div>
+          </div>
+
+          <div class="card mt-3">
+            <div class="card-body">
+              <h3 class="card-title">Temas</h3>
+              <ul class="muted" style="margin:0;">
+                <li>Subsidiariedad</li>
+                <li>Inmediatez</li>
+                <li>Legitimación por activa/pasiva</li>
+                <li>Decreto 2591/91</li>
+              </ul>
+            </div>
+          </div>
+        </div>
+      </aside>
+    </div>
+  </main>
+
+  <!-- FOOTER -->
+  <footer>
+    <div class="container center small muted">
+      FastAPI + LangChain · RAG local · Memoria en sesión
+    </div>
+  </footer>
+
+  <!-- SCRIPT -->
+  <script>
+  // ====== Tema (🌙/☀️) ======
+  const themeBtn = document.getElementById("themeBtn");
+  const themeLabel = document.getElementById("themeLabel");
+  const icoMoon = document.getElementById("icoMoon");
+  const icoSun  = document.getElementById("icoSun");
+
+  function applyTheme(theme){
+    const root = document.documentElement;
+    root.setAttribute("data-theme", theme);
+    localStorage.setItem("theme", theme);
+    const isLight = theme === "light";
+    icoSun.style.display  = isLight ? "block" : "none";
+    icoMoon.style.display = isLight ? "none"  : "block";
+    themeLabel.textContent = isLight ? "Light" : "Dark";
+  }
+
+  (function initTheme(){
+    const saved = localStorage.getItem("theme");
+    if(saved){ applyTheme(saved); }
+    else{
+      const preferLight = window.matchMedia && window.matchMedia('(prefers-color-scheme: light)').matches;
+      applyTheme(preferLight ? "light" : "dark");
+    }
+  })();
+
+  themeBtn.addEventListener("click", ()=>{
+    const curr = document.documentElement.getAttribute("data-theme") || "dark";
+    applyTheme(curr === "dark" ? "light" : "dark");
+  });
+
+  // ====== Estado / refs ======
+  const chatEl = document.getElementById("chat");
+  const formEl = document.getElementById("form");
+  const qEl = document.getElementById("q");
+  const statusEl = document.getElementById("status");
+  const newChatBtn = document.getElementById("newChat");
+  const exportBtn = document.getElementById("exportChat");
+  const sourcesEl = document.getElementById("sources");
+  const viewer = document.getElementById("docViewer");
+
+  let SESSION_ID = null;
+  const history = [];
+  let thinkingTimer = null;
+
+  // ====== Markdown ======
+  function renderMarkdown(md){
+    try{
+      marked.setOptions({ breaks:true, gfm:true });
+      const html = marked.parse(md ?? "");
+      return DOMPurify.sanitize(html);
+    }catch{
+      const esc = (s)=> (s||"").replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+      return esc(md).replace(/\n/g,"<br/>");
+    }
+  }
+
+  // ====== Split de secciones (fallback para Fuentes en texto) ======
+  function splitAnswerSections(answerText){
+    const text = String(answerText ?? "");
+    const discRe = /Esto es apoyo informativo;[^\n]*/i;
+    const fuentesBlockRe = /(^|\n)fuentes\s*:\s*\n([\s\S]*?)(?=\n\s*Esto es apoyo informativo|$)/i;
+
+    const discMatch = text.match(discRe);
+    const fuentesMatch = text.match(fuentesBlockRe);
+
+    const disclaimer = discMatch ? discMatch[0].trim() : "";
+    const sources = fuentesMatch ? (fuentesMatch[2] || "").trim() : "";
+
+    let main = text;
+    if (fuentesMatch) main = main.replace(fuentesMatch[0], "").trim();
+    if (disclaimer)   main = main.replace(discRe, "").trim();
+
+    return { main, sources, disclaimer };
+  }
+
+  // ====== Render Fuentes ======
+  function escapeHTML(s){
+    return (s||"").replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+  }
+
+  function renderStructuredSources(arr){
+    if (!Array.isArray(arr) || arr.length === 0) {
+      sourcesEl.className = "panel small muted";
+      sourcesEl.textContent = "(sin fuentes en el índice)";
+      return;
+    }
+    sourcesEl.className = "panel small";
+    const html = '<ul class="sources-list">' + arr.map(s => {
+      const src = escapeHTML(s.source || "desconocido");
+      const page = (s.page != null) ? ` (p. ${s.page})` : "";
+      const cid  = s.chunk_id ? ` — <code>${escapeHTML(s.chunk_id)}</code>` : "";
+      const score = (typeof s.score === "number") ? ` <span class="src-score">score ${s.score.toFixed(4)}</span>` : "";
+      const snip = escapeHTML(s.snippet || "");
+      const url  = s.url || "#";
+      return `
+        <li class="src-item">
+          <div class="src-top">
+            <a href="${url}" target="_blank" rel="noopener">${src}${page}${cid}</a>${score}
+            <a href="#" class="btn-link preview-link" data-url="${url}">ver aquí</a>
+          </div>
+          <div class="small muted">${snip}</div>
+        </li>
+      `;
+    }).join("") + "</ul>";
+    sourcesEl.innerHTML = html;
+  }
+
+  // Fallback si no viene sources[]
+  function renderTextSources(sourcesRaw){
+    const raw = (sourcesRaw || "").trim();
+    if (!raw){
+      sourcesEl.className = "panel small muted";
+      sourcesEl.textContent = "(sin fuentes)";
+      return;
+    }
+    const lines = raw.split(/\r?\n/).map(s => s.replace(/^\s*-\s*/, "").trim()).filter(Boolean);
+    sourcesEl.className = "panel small";
+    sourcesEl.innerHTML = "<ul class='sources-list'>" + lines.map(x => `<li class="src-item">${escapeHTML(x)}</li>`).join("") + "</ul>";
+  }
+
+  function updateSourcesPanel({ sourcesArray=null, sourcesTextBlock="" }={}){
+    if (Array.isArray(sourcesArray) && sourcesArray.length){
+      renderStructuredSources(sourcesArray);
+    }else{
+      renderTextSources(sourcesTextBlock); // compatibilidad
+    }
+  }
+
+  // Vista previa embebida
+  sourcesEl.addEventListener("click", (ev) => {
+    const link = ev.target.closest(".preview-link");
+    if (!link) return;
+    ev.preventDefault();
+    const url = link.getAttribute("data-url");
+    if (url && viewer) {
+      viewer.src = url;
+    }
+  });
+
+  // ====== Mejora UX para bloques largos de código ======
+  function enhanceCodeBlocks(container){
+    const pres = container.querySelectorAll("pre");
+    pres.forEach(pre => {
+      // Envuelve una sola vez
+      if (pre.parentElement && pre.parentElement.classList.contains("code-wrap")) return;
+
+      const wrap = document.createElement("div");
+      wrap.className = "code-wrap collapsed";
+      pre.parentNode.insertBefore(wrap, pre);
+      wrap.appendChild(pre);
+
+      // Botones
+      const actions = document.createElement("div");
+      actions.className = "code-actions";
+      const btnCopy = document.createElement("button");
+      btnCopy.type = "button"; btnCopy.textContent = "Copiar";
+      btnCopy.addEventListener("click", async () => {
+        try { await navigator.clipboard.writeText(pre.innerText || pre.textContent || ""); btnCopy.textContent = "¡Copiado!"; setTimeout(()=>btnCopy.textContent="Copiar", 1200); }
+        catch(e){ btnCopy.textContent = "Error"; setTimeout(()=>btnCopy.textContent="Copiar", 1200); }
+      });
+      const btnToggle = document.createElement("button");
+      btnToggle.type = "button"; btnToggle.textContent = "Expandir";
+      btnToggle.addEventListener("click", () => {
+        const isCollapsed = wrap.classList.toggle("collapsed");
+        btnToggle.textContent = isCollapsed ? "Expandir" : "Contraer";
+      });
+      actions.appendChild(btnCopy);
+      actions.appendChild(btnToggle);
+      wrap.appendChild(actions);
+
+      // Fade inferior
+      const fade = document.createElement("div");
+      fade.className = "fade-bottom";
+      wrap.appendChild(fade);
+
+      // Si el contenido no es alto, no colapses
+      requestAnimationFrame(()=>{
+        if(pre.scrollHeight < 300){ wrap.classList.remove("collapsed"); }
+      });
+    });
+  }
+
+  // ====== UI ======
+  function addMessage(role, text, {markdown=false}={}){
+    const div = document.createElement("div");
+    div.className = "msg " + (role==="user" ? "u" : "a") + " enter";
+    if(markdown && role!=="user"){
+      div.innerHTML = renderMarkdown(text);
+      enhanceCodeBlocks(div); // <- aquí se arregla la interfaz ante mensajes largos
+    } else {
+      div.textContent = text;
+    }
+    chatEl.appendChild(div);
+    chatEl.scrollTop = chatEl.scrollHeight;
+    history.push({role, content: text});
+  }
+
+  function setStatus(text, pulse=false){
+    statusEl.textContent = text;
+    if(pulse){
+      statusEl.classList.remove("pulse"); void statusEl.offsetWidth;
+      statusEl.classList.add("pulse");
+      setTimeout(()=> statusEl.classList.remove("pulse"), 1600);
+    }
+  }
+
+  function download(filename, text) {
+    const blob = new Blob([text], {type: "text/plain;charset=utf-8"});
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement("a");
+    a.href = url; a.download = filename;
+    document.body.appendChild(a); a.click();
+    URL.revokeObjectURL(url); a.remove();
+  }
+
+  // ====== Pensando… animado ======
+  function showThinking(){
+    const t = document.createElement("div");
+    t.className = "msg a thinking enter";
+    chatEl.appendChild(t);
+    let dots = 1;
+    const base = "Pensando";
+    const tick = () => {
+      t.textContent = "⏳ " + base + ".".repeat(dots);
+      dots = dots === 3 ? 1 : dots + 1;
+    };
+    tick();
+    thinkingTimer = setInterval(tick, 450);
+    return t;
+  }
+  function hideThinking(node){
+    if(thinkingTimer) { clearInterval(thinkingTimer); thinkingTimer = null; }
+    if(node && node.parentNode) node.remove();
+  }
+
+  // ====== API ======
+  async function startSession(){
+    const r = await fetch("/advisor/start", {method:"POST"});
+    const data = await r.json();
+    SESSION_ID = data.session_id;
+    setStatus("Sesión " + SESSION_ID, true);
+  }
+
+  async function sendChat(message){
+    const res = await fetch("/advisor/answer", {
+      method: "POST",
+      headers: {"Content-Type":"application/json"},
+      body: JSON.stringify({ session_id: SESSION_ID, message })
+    });
+    return res.json();
+  }
+
+  // ====== Eventos ======
+  newChatBtn.addEventListener("click", async ()=>{
+    chatEl.innerHTML = "";
+    sourcesEl.className = "panel small muted";
+    sourcesEl.textContent = "(sin fuentes todavía)";
+    if (viewer) viewer.src = "about:blank";
+    history.length = 0;
+    await startSession();
+    addMessage("assistant","Nueva conversación creada. Cuéntame tu caso.", {markdown:true});
+  });
+
+  exportBtn.addEventListener("click", ()=>{
+    const lines = history.map(m => `${m.role === "user" ? "Usuario" : "Asesor"}: ${m.content}`).join("\n\n");
+    const name = `chat_asesor_${SESSION_ID || "sin_sesion"}.txt`;
+    download(name, lines);
+  });
+
+  formEl.addEventListener("submit", async (e)=>{
+    e.preventDefault();
+    const message = qEl.value.trim();
+    if (!message) return;
+    addMessage("user", message);
+    qEl.value = "";
+
+    const thinkingNode = showThinking();
+    try{
+      const data = await sendChat(message);
+      hideThinking(thinkingNode);
+
+      if (!SESSION_ID && data.session_id) {
+        SESSION_ID = data.session_id;
+        setStatus("Sesión " + SESSION_ID, true);
+      }
+
+      const answer = data.answer || "(sin respuesta)";
+      const parts = splitAnswerSections(answer);
+
+      // chat: cuerpo + (disclaimer en cursiva), SIN fuentes
+      const bodyForChat = parts.main + (parts.disclaimer ? `\n\n_${parts.disclaimer}_` : "");
+      addMessage("assistant", bodyForChat, {markdown:true});
+
+      // panel lateral: prioriza sources[] del backend; si no viene, usa el bloque de texto
+      updateSourcesPanel({ sourcesArray: data.sources || null, sourcesTextBlock: parts.sources });
+
+    }catch(err){
+      hideThinking(thinkingNode);
+      addMessage("assistant", "⚠️ Error consultando /advisor/answer");
+    }
+  });
+
+  // ====== Init ======
+  (async ()=>{
+    await startSession();
+    addMessage("assistant","¡Hola! Soy tu asesor en acciones de tutela (Colombia). ¿Qué te preocupa?", {markdown:true});
+  })();
+  </script>
+</body>
+</html>

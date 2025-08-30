@@ -1,0 +1,304 @@
+/* ==========================================================================
+   Tutela – MONOCROMO (solo blancos y negros)
+   - No se cambia la estructura ni el layout, solo el look & feel
+   - Paleta: #000, #fff y sus variantes con alpha (rgba)
+   ========================================================================== */
+
+/* -------------------- Variables (tema por defecto: DARK) ------------------ */
+:root{
+  --bg: #000;                   /* fondo principal */
+  --fg: #fff;                   /* texto principal */
+
+  --line: rgba(255,255,255,0.18);
+  --line-strong: rgba(255,255,255,0.32);
+  --soft: rgba(255,255,255,0.06);     /* superficies sutiles */
+  --shadow: 0 10px 30px rgba(255,255,255,0.06);
+  --radius: 16px;
+
+  /* superficies */
+  --surface: #000;              /* tarjetas/paneles (mismo fondo, se separa con borde/sombra) */
+  --chat-bg: #000;
+  --code-bg: rgba(255,255,255,0.08);
+
+  /* acentos monocromo */
+  --accent: #fff;               /* en dark, primario = blanco */
+  --accent-contrast: #000;      /* contraste para texto sobre primario */
+  --accent-hover: rgba(255,255,255,0.85);
+
+  /* éxito/progreso monocromo */
+  --success: #fff;
+
+  /* inputs */
+  --input-bg: rgba(255,255,255,0.02);
+  --input-fg: #fff;
+  --placeholder: rgba(255,255,255,0.55);
+
+  /* mensajes chat */
+  --msg-user-bg: #000;
+  --msg-user-fg: #fff;
+  --msg-user-border: var(--line-strong);
+
+  --msg-assist-bg: #fff;
+  --msg-assist-fg: #000;
+  --msg-assist-border: var(--line);
+}
+
+/* ------------------------------- Tema LIGHT ------------------------------- */
+:root[data-theme="light"]{
+  --bg: #fff;
+  --fg: #000;
+
+  --line: rgba(0,0,0,0.18);
+  --line-strong: rgba(0,0,0,0.32);
+  --soft: rgba(0,0,0,0.06);
+  --shadow: 0 10px 30px rgba(0,0,0,0.06);
+
+  --surface: #fff;
+  --chat-bg: #fff;
+  --code-bg: rgba(0,0,0,0.08);
+
+  --accent: #000;              /* en light, primario = negro */
+  --accent-contrast: #fff;
+  --accent-hover: rgba(0,0,0,0.85);
+
+  --success: #000;
+
+  --input-bg: rgba(0,0,0,0.02);
+  --input-fg: #000;
+  --placeholder: rgba(0,0,0,0.55);
+
+  --msg-user-bg: #000;
+  --msg-user-fg: #fff;
+  --msg-user-border: var(--line-strong);
+
+  --msg-assist-bg: #fff;
+  --msg-assist-fg: #000;
+  --msg-assist-border: var(--line);
+}
+
+/* ------------------------------- Reset base ------------------------------- */
+* { box-sizing: border-box; }
+html, body { height: 100%; }
+body{
+  margin: 0;
+  background: var(--bg);
+  color: var(--fg);
+  font: 15px/1.6 system-ui, -apple-system, Segoe UI, Roboto, Ubuntu, Cantarell, Helvetica, Arial, "Apple Color Emoji","Segoe UI Emoji";
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+::selection{ background: rgba(127,127,127,.35); } /* gris derivado (bw) */
+a{ color: var(--fg); text-decoration: none; border-bottom: 1px solid transparent; }
+a:hover{ border-bottom-color: var(--fg); }
+
+/* -------------------- Bootstrap: overrides “look & feel” ------------------ */
+/* Navbar */
+.navbar{ background: var(--surface); border-bottom: 1px solid var(--line); }
+.navbar .navbar-brand, .navbar .nav-link, .navbar .navbar-text{ color: var(--fg) !important; }
+.navbar .nav-link.active{ color: var(--fg) !important; border-bottom: 1px solid var(--fg); }
+.navbar .btn{ border-color: var(--line-strong); color: var(--fg); background: transparent; }
+.navbar .btn:hover{ background: var(--soft); }
+
+/* Cards */
+.card{ background: var(--surface); color: var(--fg); border:1px solid var(--line); border-radius: var(--radius); box-shadow: var(--shadow); }
+.card-title, .card h5, .card h6, .card label{ color: var(--fg); }
+.card .border{ border-color: var(--line) !important; }
+.shadow-soft{ box-shadow: var(--shadow); }
+
+/* Forms */
+.form-control, .form-select{
+  background: var(--input-bg);
+  color: var(--input-fg);
+  border-color: var(--line);
+}
+.form-control::placeholder{ color: var(--placeholder); }
+.form-control:focus, .form-select:focus{
+  color: var(--input-fg);
+  background: var(--input-bg);
+  border-color: var(--line-strong);
+  box-shadow: 0 0 0 .15rem rgba(255,255,255,.15);
+}
+:root[data-theme="light"] .form-control:focus,
+:root[data-theme="light"] .form-select:focus{
+  box-shadow: 0 0 0 .15rem rgba(0,0,0,.15);
+}
+.input-group-text{ background: var(--input-bg); color: var(--placeholder); border-color: var(--line); }
+
+/* Buttons */
+.btn{ border-radius: 999px; font-weight: 700; }
+.btn-primary{
+  background: var(--accent);
+  border-color: var(--accent);
+  color: var(--accent-contrast);
+}
+.btn-primary:hover{
+  background: var(--accent-hover);
+  border-color: var(--accent-hover);
+  color: var(--accent-contrast);
+}
+.btn-outline-light{ border-color: var(--line-strong); color: var(--fg); background: transparent; }
+.btn-outline-light:hover{ background: var(--soft); color: var(--fg); }
+.btn-outline-dark{ border-color: var(--line-strong); color: var(--fg); background: transparent; }
+.btn-outline-dark:hover{ background: var(--soft); color: var(--fg); }
+
+/* Pills nav (wizard steps) */
+.nav-pills .nav-link{ border:1px solid var(--line); color: var(--fg); background: transparent; }
+.nav-pills .nav-link.active{ background: var(--soft); color: var(--fg); border-color: var(--line-strong); }
+
+/* Progress */
+.progress{ background: var(--soft); height: .6rem; border-radius: 999px; }
+.progress-bar{ background: var(--success); } /* blanco en dark, negro en light */
+
+/* Tables */
+.table-dark{ --bs-table-bg: var(--surface); --bs-table-striped-bg: rgba(255,255,255,.03); --bs-table-striped-color: var(--fg); color: var(--fg); }
+:root[data-theme="light"] .table-dark{ --bs-table-striped-bg: rgba(0,0,0,.03); }
+.table-dark td, .table-dark th{ border-color: var(--line); }
+
+/* Modal */
+.modal-content{ background: var(--surface); color: var(--fg); border:1px solid var(--line); }
+.modal-header{ border-bottom-color: var(--line); }
+.modal-footer{ border-top-color: var(--line); }
+.btn-close-white{ filter: invert(1); }
+.modal-dialog-scrollable .modal-body{ scrollbar-gutter: stable; }
+
+/* Toast */
+.toast{ background: var(--surface); color: var(--fg); border:1px solid var(--line); }
+.toast .toast-header{ background: var(--surface); border-bottom-color: var(--line); color: var(--fg); }
+
+/* Badges */
+.badge-soft{ background: var(--soft); color: var(--fg); border:1px solid var(--line); }
+
+/* Code / pre */
+pre, code{ font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace; }
+pre{ background: var(--code-bg); color: var(--fg); border:1px solid var(--line); border-radius: 12px; }
+
+/* Scroll helpers */
+.scrollbox{ max-height: 48vh; overflow: auto; scrollbar-width: thin; }
+.scrollbox::-webkit-scrollbar{ width: 10px; }
+.scrollbox::-webkit-scrollbar-thumb{ background: var(--line); border-radius: 10px; }
+.scrollbox::-webkit-scrollbar-track{ background: transparent; }
+
+/* Wizard helpers */
+.step{ /* control de visibilidad */ }
+.step .form-text{ color: var(--placeholder) !important; }
+.small-help{ font-size:.875rem; color: var(--placeholder); }
+
+/* Spinner overlay */
+#spinner{ background: rgba(0,0,0,.45); }
+
+/* Chat / Markdown (opcional) */
+.chat{
+  min-height: 40vh;
+  padding: 12px;
+  border-radius: var(--radius);
+  border:1px solid var(--line);
+  background: var(--chat-bg);
+  overflow-y: auto;
+}
+.msg{
+  padding: .9rem 1rem;
+  border-radius: 14px;
+  margin: .45rem 0;
+  border:1px solid var(--line);
+  box-shadow: var(--shadow);
+  white-space: normal;
+  word-wrap: break-word;
+}
+.msg.u{ background: var(--msg-user-bg); color: var(--msg-user-fg); border-color: var(--msg-user-border); }
+.msg.a{ background: var(--msg-assist-bg); color: var(--msg-assist-fg); border-color: var(--msg-assist-border); }
+.msg.a code{ background: var(--code-bg); padding:.1rem .3rem; border-radius:6px; }
+.msg.a pre{ background: var(--code-bg); padding:.75rem; border-radius:8px; overflow:auto; }
+.msg.enter{ animation: fadeInUp .22s ease-out both; }
+@keyframes fadeInUp{ from{opacity:0; transform:translateY(6px)} to{opacity:1; transform:none} }
+
+/* Sticky/Aside utils */
+.sticky-col{ position: sticky; top: 72px; max-height: calc(100vh - 84px); overflow: auto; padding-bottom: 8px; scrollbar-width: thin; }
+.sticky-col::-webkit-scrollbar{ width: 10px; }
+.sticky-col::-webkit-scrollbar-thumb{ background: var(--line); border-radius: 10px; }
+.sticky-col::-webkit-scrollbar-track{ background: transparent; }
+@media (max-width: 980px){
+  .sticky-col{ position: static; max-height: none; overflow: visible; }
+}
+
+/* Utilities */
+.muted{ opacity: .7; }
+.center{ text-align:center; }
+
+/* Wizard visibility (asegura un paso a la vez) */
+.step{ display:none; }
+.step.active{ display:block; }
+
+/* ==========================================================================
+   Scoped fixes for Wizard page to avoid conflicts with global styles.css
+   ========================================================================== */
+.wizard-page .row{ display:flex; flex-wrap:wrap; }               /* restore Bootstrap row behavior */
+.wizard-page .container{ width:auto; max-width: 1140px; }        /* let Bootstrap container sizes win */
+@media (min-width: 1200px){
+  .wizard-page main.container{ max-width:1140px; }
+}
+/* Ensure nav pills wrap nicely without breaking layout */
+.wizard-page .nav-pills{ flex-wrap: wrap; gap:.5rem; }
+
+/* ===== Wizard layout fixes ===== */
+.wizard-page .row{
+  --bs-gutter-x: 1.5rem;
+  --bs-gutter-y: 0;
+  display:flex;
+  flex-wrap:wrap;
+  margin-top: calc(-1 * var(--bs-gutter-y));
+  margin-right: calc(-0.5 * var(--bs-gutter-x));
+  margin-left: calc(-0.5 * var(--bs-gutter-x));
+}
+.wizard-page .container{ width:auto; max-width: min(1400px, 94vw); }
+@media (min-width: 1400px){
+  .wizard-page main.container{ max-width: min(1400px, 94vw); }
+}
+
+/* ===== Dark selects readable ===== */
+:root:not([data-theme="light"]) .wizard-page .form-select,
+:root:not([data-theme="light"]) .wizard-page .form-control{
+  color:#fff;
+  background: rgba(255,255,255,0.06);
+  border-color: rgba(255,255,255,0.18);
+}
+:root:not([data-theme="light"]) .wizard-page .form-select:focus,
+:root:not([data-theme="light"]) .wizard-page .form-control:focus{
+  border-color: rgba(255,255,255,0.32);
+  box-shadow: 0 0 0 .15rem rgba(255,255,255,.15);
+}
+:root[data-theme="light"] .wizard-page .form-select:focus,
+:root[data-theme="light"] .wizard-page .form-control:focus{
+  box-shadow: 0 0 0 .15rem rgba(0,0,0,.15);
+}
+
+/* Dropdown list for <select> options */
+:root:not([data-theme="light"]) .wizard-page .form-select option{
+  background:#000; color:#fff;
+}
+:root[data-theme="light"] .wizard-page .form-select option{
+  background:#fff; color:#000;
+}
+
+/* === Make all step cards span full width (match "Listado de partes") === */
+.wizard-page .step > .row > [class^="col-"],
+.wizard-page .step > .row > [class*=" col-"]{
+  flex: 0 0 100%;
+  max-width: 100%;
+}
+
+/* === AI textarea presentation === */
+.wizard-page .ai-textarea{
+  min-height: 200px;
+  max-height: 56vh;
+  white-space: pre-wrap;      /* wrap long lines */
+  overflow: auto;
+  resize: vertical;
+  background: rgba(255,255,255,0.06);
+  color:#fff;
+  border-color: rgba(255,255,255,0.18);
+}
+:root[data-theme="light"] .wizard-page .ai-textarea{
+  background: rgba(0,0,0,0.06);
+  color:#000;
+  border-color: rgba(0,0,0,0.18);
+}

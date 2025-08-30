@@ -1,0 +1,232 @@
+<!doctype html>
+<html lang="es" data-theme="dark">
+<head>
+  <meta charset="utf-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <title>TUTELIA — el país de los derechos</title>
+  <link rel="stylesheet" href="styles.css"/>
+  <style>
+    /* Toques sutiles para la portada */
+    .hero-title{
+      font-size: clamp(28px, 4.2vw, 52px);
+      line-height: 1.05;
+      margin: 0 0 .6rem 0;
+    }
+    .tagline{ font-weight: 700; letter-spacing:.3px; }
+    .pill{ border:1px solid var(--line); border-radius:999px; padding:.35rem .65rem; display:inline-flex; gap:.4rem; align-items:center; }
+    .kicker{ opacity:.8; font-size:.95rem; }
+    .card .icon{ width:22px; height:22px; margin-right:.35rem; }
+    .hero-cta .btn{ width:100%; }
+    @media (min-width: 680px){
+      .hero-cta .btn{ width:auto; }
+    }
+  </style>
+</head>
+<body>
+  <!-- NAV -->
+  <nav class="navbar">
+    <div class="container navbar-inner">
+      <span class="brand">TUTELIA</span>
+      <div style="display:flex; align-items:center; gap:.5rem; margin-left:auto">
+        <button id="themeBtn" class="theme-toggle" type="button" title="Cambiar tema">
+          <!-- Moon -->
+          <svg id="icoMoon" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+            <path d="M21 12.79A9 9 0 0 1 11.21 3 7 7 0 1 0 21 12.79z"/>
+          </svg>
+          <!-- Sun -->
+          <svg id="icoSun" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true" style="display:none">
+            <path d="M12 4V2m0 20v-2m8-8h2M2 12h2m13.657-6.343 1.414-1.414M4.929 19.071l1.414-1.414m0-11.314L4.93 4.93M19.071 19.07l-1.414-1.414M12 6a6 6 0 1 1 0 12A6 6 0 0 1 12 6z"/>
+          </svg>
+          <span id="themeLabel">Dark</span>
+        </button>
+        <span id="apiStatus" class="badge">Comprobando…</span>
+      </div>
+    </div>
+  </nav>
+
+  <!-- HERO -->
+  <header class="hero">
+    <div class="container">
+      <div class="grid grid-7-5">
+        <div>
+          <div class="pill kicker mb-3">
+            <span class="tagline">Bienvenido al futuro del derecho</span>
+          </div>
+          <h1 class="hero-title">Redacta tu acción de tutela con claridad y en minutos</h1>
+          <p class="lead mb-4">
+            TUTELIA te acompaña paso a paso: cuentas lo que pasó, ordenamos los <strong>hechos</strong>, identificamos los
+            <strong>derechos vulnerados</strong> y creamos un documento <strong>listo para presentar</strong>. Sin tecnicismos.
+          </p>
+
+          <div class="row hero-cta">
+            <a class="btn btn-outline" href="asesor.html" aria-label="Ir al Asesor">Hablar con el Asesor</a>
+            <a class="btn btn-light" href="tutela.html" aria-label="Ir al Wizard de Tutela">Redactar mi Tutela</a>
+          </div>
+
+          <p class="small muted mt-3">
+            Antes de continuar, <strong>verifica que la información que suministres sea verdadera y esté soportada con documentos</strong>.
+          </p>
+        </div>
+
+        <aside>
+          <div class="card">
+            <div class="card-body">
+              <h3 class="card-title">¿Qué puedes hacer aquí?</h3>
+              <p class="muted">Entender tu caso y armar tu tutela sin enredos. Ejemplos:</p>
+              <ul class="muted">
+                <li><strong>¿No te entregan medicamentos o una cirugía?</strong> Te guiamos para pedir a la EPS que autorice y cumpla en un plazo.</li>
+                <li><strong>¿No responden tu derecho de petición?</strong> Preparamos la tutela para que contesten en término y entreguen la información.</li>
+                <li><strong>¿Cortaron agua o energía por error?</strong> Solicitamos restablecer el servicio y revisar la facturación.</li>
+                <li><strong>¿Tu hijo no consigue cupo escolar?</strong> Redactamos la tutela para que lo matriculen y garanticen el acceso.</li>
+                <li><strong>¿Te despidieron estando enfermo/a o en embarazo?</strong> Pedimos protección al trabajo y al mínimo vital.</li>
+                <li><strong>¿Te reportaron mal en centrales de riesgo?</strong> Reclamamos corrección de datos (hábeas data).</li>
+              </ul>
+            </div>
+          </div>
+          <div class="panel mt-3 small">
+            <strong>TUTELIA: tecnología para el acceso a la justicia.</strong> Del relato a un escrito verificable y listo para radicar.
+          </div>
+        </aside>
+      </div>
+    </div>
+  </header>
+
+  <!-- MODOS -->
+  <section class="section">
+    <div class="container grid grid-2">
+      <!-- Asesor -->
+      <div class="card">
+        <div class="card-body">
+          <h3 class="card-title">
+            <svg class="icon" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true" style="vertical-align:-4px;">
+              <path d="M12 3a9 9 0 1 0 6.36 2.64A9 9 0 0 0 12 3Zm1 13h-2v-2h2Zm0-4h-2V7h2Z"/>
+            </svg>
+            Asesor
+          </h3>
+          <p class="muted">
+            Un chat para <strong>entender tu situación</strong> y aterrizar tu caso. Preguntas claras, respuestas claras,
+            apoyadas en material jurídico de referencia.
+          </p>
+          <p class="muted">
+            Ejemplos: “<em>¿Esto sí se tutela?</em> Me negaron un medicamento”. “<em>¿Qué documentos llevo?</em> Tengo fórmulas y una historia clínica”.
+            “<em>¿Cuál derecho se vulnera?</em> No responden mi petición hace meses”.
+          </p>
+          <a class="btn btn-outline" href="asesor.html">Hablar con el Asesor</a>
+        </div>
+      </div>
+
+      <!-- Tutela -->
+      <div class="card">
+        <div class="card-body">
+          <h3 class="card-title">
+            <svg class="icon" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true" style="vertical-align:-4px;">
+              <path d="M6 2h9l5 5v13a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2Zm8 1.5V7h3.5L14 3.5Z"/>
+            </svg>
+            Wizard de Tutela
+          </h3>
+          <p class="muted">
+            Escribe tu tutela paso a paso. Ordenamos tus <strong>hechos con fechas</strong>, normalizamos <strong>pruebas y anexos</strong>,
+            cuidamos que las <strong>pretensiones</strong> sean claras (y sin montos de dinero) y generamos la <strong>cadena jurídica</strong>.
+          </p>
+          <p class="muted">
+            Ejemplos: pedir a la <strong>EPS</strong> autorizar un procedimiento en <strong>48 horas</strong>;
+            ordenar a una <strong>entidad pública</strong> responder un derecho de petición y entregar la información;
+            solicitar a un <strong>colegio</strong> asignar <strong>cupo escolar</strong> con prioridad.
+          </p>
+          <a class="btn btn-light" href="tutela.html">Redactar mi Tutela</a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- CÓMO USARLO -->
+  <section class="section">
+    <div class="container">
+      <div class="grid grid-2">
+        <div class="card">
+          <div class="card-body">
+            <h3 class="card-title">¿Cómo lo uso?</h3>
+            <ol class="muted">
+              <li><strong>Cuenta tu caso</strong> en el Asesor: qué ocurrió, cuándo y con quién.</li>
+              <li>En el <strong>Wizard</strong>, escribe los hechos en orden, agrega pruebas y <strong>elige lo que pides</strong>.</li>
+              <li><strong>Revisa</strong> nombres, direcciones, fechas y pretensiones.</li>
+              <li><strong>Descarga el .docx</strong> y presenta tu tutela.</li>
+            </ol>
+          </div>
+        </div>
+
+        <div class="card">
+          <div class="card-body">
+            <h3 class="card-title">¿Para quién es?</h3>
+            <p class="muted">
+              Para cualquier persona que necesite una guía <strong>clara y rápida</strong> para ejercer sus derechos por tutela;
+              también útil para estudiantes, organizaciones y equipos de atención ciudadana que buscan <strong>orden y claridad</strong> al documentar casos.
+            </p>
+          </div>
+        </div>
+      </div>
+      <div class="panel mt-3 small">
+        <strong>Importante:</strong> <em>verifica que la información que suministres sea verdadera y esté respaldada</em>.
+        El sistema te ayuda a redactar; <strong>tú eres responsable</strong> de los datos, anexos y afirmaciones que presentes.
+      </div>
+    </div>
+  </section>
+
+  <!-- FOOTER -->
+  <footer>
+    <div class="container center small">
+      Desarrollado por <strong>S Team</strong> para la hackathon de <strong>Ciberpaz</strong>.
+    </div>
+  </footer>
+
+  <!-- THEME & STATUS SCRIPT -->
+  <script>
+  // ====== Tema (🌙/☀️) ======
+  const themeBtn = document.getElementById("themeBtn");
+  const themeLabel = document.getElementById("themeLabel");
+  const icoMoon = document.getElementById("icoMoon");
+  const icoSun  = document.getElementById("icoSun");
+
+  function applyTheme(theme){
+    const root = document.documentElement;
+    root.setAttribute("data-theme", theme);
+    try{ localStorage.setItem("theme", theme); }catch{}
+    const isLight = theme === "light";
+    if(icoSun)  icoSun.style.display  = isLight ? "block" : "none";
+    if(icoMoon) icoMoon.style.display = isLight ? "none"  : "block";
+    if(themeLabel) themeLabel.textContent = isLight ? "Light" : "Dark";
+  }
+
+  (function initTheme(){
+    let saved = null;
+    try{ saved = localStorage.getItem("theme"); }catch{}
+    if(saved){ applyTheme(saved); }
+    else{
+      const preferLight = window.matchMedia && window.matchMedia('(prefers-color-scheme: light)').matches;
+      applyTheme(preferLight ? "light" : "dark");
+    }
+  })();
+
+  if(themeBtn){
+    themeBtn.addEventListener("click", ()=>{
+      const curr = document.documentElement.getAttribute("data-theme") || "dark";
+      applyTheme(curr === "dark" ? "light" : "dark");
+    });
+  }
+
+  // ====== Estado API en badge ======
+  (async () => {
+    const el = document.getElementById("apiStatus");
+    if(!el) return;
+    try {
+      const r = await fetch("/healthz");
+      el.textContent = r.ok ? "API OK" : "Sin respuesta";
+      el.style.borderColor = r.ok ? "var(--line-strong)" : "var(--line)";
+    } catch {
+      el.textContent = "API caída";
+      el.style.borderColor = "var(--line)";
+    }
+  })();
+  </script>
+</body>
+</html>

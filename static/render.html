@@ -1,0 +1,384 @@
+<!doctype html>
+<html lang="es" data-theme="dark">
+<head>
+  <meta charset="utf-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <title>Render — Acción de Tutela (COL)</title>
+
+  <link rel="stylesheet" href="styles.css"/>
+  <!-- Bootstrap 5 -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css"
+        rel="stylesheet"
+        integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH"
+        crossorigin="anonymous">
+  <script src="https://cdn.jsdelivr.net/npm/dompurify@3.1.7/dist/purify.min.js"></script>
+
+  <style>
+    /* ===== Theme variables (robust light/dark) ===== */
+    :root{
+      --bg:#0b0d11; --text:#e5e7eb; --muted:#a7b0be;
+      --line:#1f2937; --line-strong:#2b3748;
+      --panel:#0f1217; --bg-weak:#121722;
+      --backdrop: rgba(17,24,39,.32);
+      --shadow: 0 6px 24px rgba(0,0,0,.22);
+    }
+    html[data-theme="light"]{
+      --bg:#ffffff; --text:#111827; --muted:#5b6472;
+      --line:#e5e7ef; --line-strong:#cbd5e1;
+      --panel:#ffffff; --bg-weak:#f8fafc;
+      --backdrop: rgba(17,24,39,.25);
+      --shadow: 0 6px 24px rgba(16,24,40,.06);
+    }
+
+    /* ===== Base ===== */
+    html, body{ height:100%; }
+    body{ background-color: var(--bg) !important; color: var(--text) !important; }
+    .navbar, .card, .doc, .modal{ background: var(--panel) !important; color: var(--text) !important; border-color: var(--line) !important; }
+    .card, .doc{ border:1px solid var(--line); box-shadow: var(--shadow); border-radius: 14px }
+    .card-body{ color: var(--text) }
+    .container{ max-width: 1160px }
+
+    /* ===== Layout ===== */
+    .grid-8-4{ display:grid; grid-template-columns: minmax(0, 8fr) minmax(290px, 4fr); gap:1.25rem; }
+    @media (max-width: 992px){ .grid-8-4{ grid-template-columns: 1fr } }
+
+    /* ===== Documento ===== */
+    .doc{ padding:24px; }
+    .doc h1{ font-size:1.25rem; margin:0 0 .35rem 0 }
+    .doc h2{ font-size:1.05rem; margin:1.1rem 0 .35rem 0; letter-spacing:.2px }
+    .doc h3{ font-size:1rem; margin:.8rem 0 .35rem 0 }
+    .doc p{ margin:.35rem 0 }
+    .doc pre{ white-space: pre-wrap; word-break: break-word; overflow-wrap:anywhere; margin:0; max-height:56vh; overflow:auto }
+    .doc hr{ border:0; border-top:1px solid var(--line); margin:1rem 0 }
+
+    .doc .section{ margin: .75rem 0 1rem 0; }
+    .doc .section + .section{ padding-top:.35rem; border-top:1px dashed var(--line) }
+    .doc .muted{ opacity:.85 }
+
+    .badge{ background: transparent; border:1px solid var(--line); color: var(--text) }
+    .panel.note{ background:var(--bg-weak); border:1px dashed var(--line); padding:.5rem .6rem; border-radius:10px }
+
+    /* TOC */
+    .toc{ list-style:none; padding:0; margin:0 }
+    .toc li{ padding:.15rem 0 }
+
+    /* Print styles */
+    @media print{
+      nav, .no-print{ display:none !important }
+      body{ background:white }
+      .doc{ border:0; border-radius:0; box-shadow:none; padding:0 }
+      .doc h1{ font-size: 18px }
+      .doc h2{ font-size: 16px }
+      .doc h3{ font-size: 14px }
+      .doc p, .doc pre{ font-size: 12px; line-height: 1.35 }
+      .doc pre{ max-height: none; overflow: visible }
+      .section{ page-break-inside: avoid }
+      .pb{ page-break-after: always }
+    }
+  </style>
+</head>
+<body>
+  <!-- NAV -->
+  <nav class="navbar no-print">
+    <div class="container navbar-inner d-flex align-items-center gap-2">
+      <a class="brand" href="index.html">← Volver</a>
+      <span>Render del documento — Acción de Tutela</span>
+
+      <div class="ms-auto d-flex align-items-center gap-2">
+        <button id="themeBtn" class="theme-toggle" type="button" title="Cambiar tema">
+          <!-- Moon -->
+          <svg id="icoMoon" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+            <path d="M21 12.79A9 9 0 0 1 11.21 3 7 7 0 1 0 21 12.79z"/>
+          </svg>
+          <!-- Sun -->
+          <svg id="icoSun" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true" style="display:none">
+            <path d="M12 4V2m0 20v-2m8-8h2M2 12h2m13.657-6.343 1.414-1.414M4.929 19.071l1.414-1.414m0-11.314L4.93 4.93M19.071 19.07l-1.414-1.414M12 6a6 6 0 1 1 0 12A6 6 0 0 1 12 6z"/>
+          </svg>
+          <span id="themeLabel">Dark</span>
+        </button>
+        <span id="status" class="badge">Sin caso</span>
+      </div>
+    </div>
+  </nav>
+
+  <!-- MAIN -->
+  <main class="container section mt-3">
+    <div class="grid-8-4">
+      <!-- Documento -->
+      <div>
+        <div class="doc" id="docRoot" aria-live="polite">
+          <h1>Acción de Tutela — Documento</h1>
+          <div class="muted" id="docMeta">(selecciona un caso…)</div>
+          <hr/>
+          <div id="docContent">
+            <div class="panel note">Cargando…</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Acciones y metadatos -->
+      <aside class="no-print">
+        <div class="card">
+          <div class="card-body">
+            <div class="d-flex flex-wrap align-items-center justify-content-between gap-2">
+              <div class="d-flex flex-wrap gap-2">
+                <button id="btnLoadFromQuery" class="btn btn-outline" type="button">Cargar por URL</button>
+                <button id="btnReloadCases" class="btn btn-outline" type="button">Recargar casos</button>
+              </div>
+              <select id="caseSelect" class="input" style="min-width:260px"></select>
+            </div>
+
+            <div class="d-flex flex-wrap gap-2 mt-2">
+              <button id="btnPrint" class="btn btn-outline" type="button">Imprimir / PDF</button>
+              <button id="btnExportDocx" class="btn btn-outline" type="button">Exportar DOCX</button>
+              <button id="btnDownloadJson" class="btn btn-outline" type="button">Descargar JSON</button>
+              <button id="btnCopyPlain" class="btn btn-outline" type="button">Copiar texto</button>
+            </div>
+
+            <div class="mt-2 small muted" id="hint">Tip: abre <code>render.html?id=CASE_ID</code> para cargar directo.</div>
+          </div>
+        </div>
+
+        <div class="card mt-3">
+          <div class="card-body">
+            <h3 class="card-title">Tabla de contenido</h3>
+            <ul id="toc" class="toc small"></ul>
+          </div>
+        </div>
+
+        <div class="card mt-3">
+          <div class="card-body">
+            <h3 class="card-title">Secciones a mostrar</h3>
+            <div id="toggles" class="small"></div>
+          </div>
+        </div>
+
+        <div class="card mt-3">
+          <div class="card-body">
+            <h3 class="card-title">JSON (vista rápida)</h3>
+            <details>
+              <summary>Ver estructura</summary>
+              <pre id="jsonPreview" class="small" style="max-height:260px; overflow:auto"></pre>
+            </details>
+          </div>
+        </div>
+      </aside>
+    </div>
+  </main>
+
+  <footer class="no-print mt-3">
+    <div class="container text-center small muted">
+      FastAPI · SQLite · Render listo para imprimir — <em>Esto es apoyo informativo; no sustituye asesoría legal profesional.</em>
+    </div>
+  </footer>
+
+  <script>
+  // ====== Tema (🌙/☀️) ======
+  const themeBtn = document.getElementById("themeBtn");
+  const themeLabel = document.getElementById("themeLabel");
+  const icoMoon = document.getElementById("icoMoon");
+  const icoSun  = document.getElementById("icoSun");
+  function applyTheme(theme){
+    const root = document.documentElement;
+    root.setAttribute("data-theme", theme);
+    localStorage.setItem("theme", theme);
+    const isLight = theme === "light";
+    icoSun.style.display  = isLight ? "block" : "none";
+    icoMoon.style.display = isLight ? "none"  : "block";
+    themeLabel.textContent = isLight ? "Light" : "Dark";
+  }
+  (function initTheme(){
+    const saved = localStorage.getItem("theme");
+    if(saved){ applyTheme(saved); }
+    else{
+      const preferLight = window.matchMedia && window.matchMedia('(prefers-color-scheme: light)').matches;
+      applyTheme(preferLight ? "light" : "dark");
+    }
+  })();
+  themeBtn.addEventListener("click", ()=>{
+    const curr = document.documentElement.getAttribute("data-theme") || "dark";
+    applyTheme(curr === "dark" ? "light" : "dark");
+  });
+
+  // ====== Estado ======
+  const BASE = "/wizard";
+  const statusEl = document.getElementById('status');
+  const caseSelect = document.getElementById('caseSelect');
+  const btnLoadFromQuery = document.getElementById('btnLoadFromQuery');
+  const btnReloadCases   = document.getElementById('btnReloadCases');
+  const btnPrint         = document.getElementById('btnPrint');
+  const btnExportDocx    = document.getElementById('btnExportDocx');
+  const btnDownloadJson  = document.getElementById('btnDownloadJson');
+  const btnCopyPlain     = document.getElementById('btnCopyPlain');
+
+  const docMeta   = document.getElementById('docMeta');
+  const docContent= document.getElementById('docContent');
+  const tocEl     = document.getElementById('toc');
+  const togglesEl = document.getElementById('toggles');
+  const jsonPreview = document.getElementById('jsonPreview');
+
+  let CASE_ID = null;
+  let BUNDLE  = null; // compose-structured
+
+  // ====== API ======
+  async function api(path, {method='GET', body=null, headers={}}={}){
+    const opts = { method, headers: { 'Content-Type':'application/json', ...headers } };
+    if (body) opts.body = JSON.stringify(body);
+    const r = await fetch(BASE + path, opts);
+    if (!r.ok) throw new Error(`${method} ${path} → ${r.status}`);
+    return await r.json();
+  }
+  async function listCases(){ return await api('/cases'); }
+  async function composeStructured(id){ return await api(`/case/${id}/compose-structured`); }
+  async function composeFinal(id){ return await api(`/case/${id}/compose-final`); }
+  async function exportDocx(id){ return await api(`/case/${id}/export-docx`, {method:'POST'}); }
+
+  // ====== Util ======
+  function esc(s){ return (s||"").replace(/[&<>\"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c])); }
+  function checkbox(id, label, checked){
+    const el = document.createElement('label'); el.className = 'd-flex align-items-center gap-2';
+    el.innerHTML = `<input id="${id}" type="checkbox" ${checked? 'checked':''}/> <span>${label}</span>`;
+    return el;
+  }
+  function pickText(block){ if(!block) return ''; return (block.final || block.ai || block.user || '').trim(); }
+  function section(title, id, text){
+    if(!text) return '';
+    return `\n<section class="section" id="${id}">\n  <h2>${esc(title)}</h2>\n  <pre>${esc(text)}</pre>\n</section>`;
+  }
+
+  function buildDoc(){
+    if(!BUNDLE){ docContent.innerHTML = '<div class="panel note">Sin datos…</div>'; return; }
+    try{ jsonPreview.textContent = JSON.stringify(BUNDLE, null, 2); }
+    catch{ jsonPreview.textContent = '(error convirtiendo JSON)'; }
+
+    // Toggles
+    togglesEl.innerHTML = '';
+    const toggles = [
+      ['encabezado', 'Encabezado', true],
+      ['intro', 'Intro (auto)', true],
+      ['hechos', 'Hechos', true],
+      ['pretensiones', 'Pretensiones', true],
+      ['derechos_vulnerados', 'Derechos vulnerados', true],
+      ['fundamentos_juridicos', 'Fundamentos jurídicos', true],
+      ['fundamentos_de_derecho', 'Fundamentos de derecho', true],
+      ['pruebas_y_anexos', 'Pruebas y Anexos', true],
+      ['notificaciones', 'Notificaciones (auto)', true],
+      ['firmas', 'Firmas (auto)', true],
+      ['art_37', 'Cumplimiento art. 37 (auto)', true],
+      ['ref', 'Referencia (REF)', true],
+    ];
+    const toggleMap = {};
+    toggles.forEach(([id,label,checked])=>{
+      const el = checkbox('chk_'+id, label, checked);
+      togglesEl.appendChild(el);
+      toggleMap[id] = el.querySelector('input');
+      el.querySelector('input').addEventListener('change', render);
+    });
+
+    function render(){
+      const a = BUNDLE.auto || {};
+      const g = (BUNDLE.generados || {});
+      const parts = [];
+
+      if(toggleMap.encabezado.checked){
+        const header = String(BUNDLE.header || BUNDLE.encabezado || '').trim();
+        if(header){ parts.push(`<section class="section" id="encabezado"><pre>${esc(header)}</pre></section>`); }
+      }
+      if(toggleMap.intro.checked){ const t = (a.intro || '').trim(); if(t) parts.push(section('Intro', 'intro', t)); }
+      if(toggleMap.hechos.checked){ parts.push(section('Hechos', 'hechos', pickText(BUNDLE.hechos))); }
+      if(toggleMap.pretensiones.checked){ parts.push(section('Pretensiones', 'pretensiones', pickText(BUNDLE.pretensiones))); }
+      if(toggleMap.derechos_vulnerados.checked){ parts.push(section('Derechos vulnerados', 'derechos_vulnerados', pickText(g.derechos_vulnerados))); }
+      if(toggleMap.fundamentos_juridicos.checked){ parts.push(section('Fundamentos jurídicos', 'fundamentos_juridicos', pickText(g.fundamentos_juridicos))); }
+      if(toggleMap.fundamentos_de_derecho.checked){ parts.push(section('Fundamentos de derecho', 'fundamentos_de_derecho', pickText(g.fundamentos_de_derecho))); }
+      if(toggleMap.pruebas_y_anexos.checked){ parts.push(section('Pruebas y Anexos', 'pruebas_y_anexos', pickText(BUNDLE.pruebas_y_anexos))); }
+      if(toggleMap.notificaciones.checked){ const t=(a.notificaciones||'').trim(); if(t) parts.push(section('Notificaciones', 'notificaciones', t)); }
+      if(toggleMap.firmas.checked){ const t=(a.firmas||'').trim(); if(t) parts.push(section('Firmas', 'firmas', t)); }
+      if(toggleMap.art_37.checked){ const t=(a.cumplimiento_art_37||'').trim(); if(t) parts.push(section('Cumplimiento art. 37', 'art_37', t)); }
+      if(toggleMap.ref.checked){ parts.push(section('Referencia (REF)', 'ref', pickText(g.ref))); }
+
+      if(parts.length===0){ docContent.innerHTML = '<div class="panel note">Sin secciones visibles.</div>'; return; }
+      docContent.innerHTML = parts.join('\n');
+      buildToc();
+    }
+    function buildToc(){
+      const sections = Array.from(docContent.querySelectorAll('.section'));
+      tocEl.innerHTML = sections.map(sec =>{
+        const h2 = sec.querySelector('h2');
+        const id = sec.id || '';
+        const title = h2 ? h2.textContent : id;
+        return `<li><a href="#${id}">${esc(title)}</a></li>`;
+      }).join('');
+    }
+    render();
+  }
+
+  async function loadCases(){
+    const items = await listCases();
+    caseSelect.innerHTML = items.map(it => `<option value="${it.case_id}">${esc(it.title||'Acción de Tutela')} — ${esc(it.status)} — ${esc(it.updated_at)}</option>`).join('');
+    if(!CASE_ID && items.length){ CASE_ID = items[0].case_id; caseSelect.value = CASE_ID; }
+  }
+  async function loadBundle(id){
+    try{
+      statusEl.textContent = 'Caso ' + id; CASE_ID = id;
+      try{ BUNDLE = await composeStructured(id); }
+      catch{ const raw = await composeFinal(id); BUNDLE = { header: '', auto:{}, generados:{}, hechos:{final: raw.full_text||raw}, pretensiones:{}, pruebas_y_anexos:{} }; }
+      const meta = BUNDLE.case || BUNDLE.meta || {};
+      const updated = meta.updated_at || BUNDLE.updated_at || new Date().toISOString();
+      docMeta.innerHTML = `ID: <strong>${esc(id)}</strong> · Estado: ${esc(meta.status||'draft')} · Actualizado: ${esc(updated)}`;
+      buildDoc();
+    }catch(e){
+      docContent.innerHTML = `<div class="panel note">No se pudo cargar el caso ${esc(id)}.</div>`;
+    }
+  }
+
+  // ====== Eventos ======
+  btnReloadCases.addEventListener('click', loadCases);
+  caseSelect.addEventListener('change', ()=>{ const id = caseSelect.value; if(id) loadBundle(id); });
+
+  btnLoadFromQuery.addEventListener('click', ()=>{
+    const url = new URL(location.href); const id = url.searchParams.get('id'); if(!id) return alert('Agrega ?id=CASE_ID a la URL');
+    caseSelect.value = id; loadBundle(id);
+  });
+
+  btnPrint.addEventListener('click', ()=>{ window.print(); });
+
+  btnCopyPlain.addEventListener('click', ()=>{
+    const text = Array.from(docContent.querySelectorAll('pre')).map(p => p.innerText || p.textContent || '').join('\n\n');
+    navigator.clipboard.writeText(text).then(()=>{
+      btnCopyPlain.textContent = '¡Copiado!'; setTimeout(()=> btnCopyPlain.textContent = 'Copiar texto', 1200);
+    }).catch(()=>{
+      alert('No se pudo copiar');
+    });
+  });
+
+  btnDownloadJson.addEventListener('click', ()=>{
+    if(!BUNDLE) return alert('Carga un caso primero');
+    const blob = new Blob([JSON.stringify(BUNDLE, null, 2)], {type:'application/json'});
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a'); a.href = url; a.download = `tutela_${CASE_ID||'sin_id'}.json`; a.click();
+    URL.revokeObjectURL(url);
+  });
+
+  btnExportDocx.addEventListener('click', async ()=>{
+    if(!CASE_ID) return alert('Selecciona un caso');
+    try{ const out = await exportDocx(CASE_ID); const a = document.createElement('a'); a.href = out.docx_url; a.target = '_blank'; a.rel='noopener'; a.click(); }
+    catch{ alert('Error exportando DOCX'); }
+  });
+
+  // ====== Init ======
+  (async ()=>{
+    try{
+      await loadCases();
+      const url = new URL(location.href);
+      const id = url.searchParams.get('id');
+      if(id){ caseSelect.value = id; await loadBundle(id); }
+    }catch(e){ console.warn('No hay casos aún'); }
+  })();
+  </script>
+
+  <!-- Bootstrap JS -->
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"
+          integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz"
+          crossorigin="anonymous"></script>
+</body>
+</html>
