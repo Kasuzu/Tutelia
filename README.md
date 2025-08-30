@@ -70,16 +70,35 @@ Este proyecto ayuda a **estructurar** y **mejorar** el escrito de tutela, sugier
 
 ## Características
 
-- **Wizard de Tutela** con flujo realista (usuario escribe; IA mejora).
-- **RAG** con **Chroma** + embeddings HF para citar normas/sentencias (tú controlas el corpus).
-- **Mejoras automáticas** al guardar en **Hechos**, **Pretensiones** (con sugerencias no‑económicas) y **Pruebas y Anexos**.
+- **Wizard de Tutela** con flujo realista (usuario escribe; IA mejora).  
+  *Ventajas:* guía paso a paso, reduce la curva de aprendizaje, **minimiza errores de forma** y **uniformiza** los escritos.
+
+- **RAG** con **Chroma** + embeddings HF para citar normas/sentencias (tú controlas el corpus).  
+  *Ventajas:* **citas verificables**, trabajo **privado/offline** y control total sobre fuentes. Puedes **alimentarlo con nuevos documentos (PDF/DOCX/TXT/MD)** en `./docs` y reindexar en minutos. **Mientras más corpus tengas, mejor cobertura y precisión contextual** obtendrás.
+
+- **Mejoras automáticas** al guardar en **Hechos**, **Pretensiones** (con sugerencias no-económicas) y **Pruebas y Anexos**.  
+  *Ventajas:* **ahorra tiempo**, estandariza redacción, sugiere pretensiones válidas y **normaliza pruebas/anexos** (claridad probatoria).
+
 - **Cadena jurídica en un paso** (opcional):  
-  `Hechos → Derechos vulnerados → Fundamentos jurídicos → Fundamentos de derecho (RAG) → REF`.
-- **Secciones autocompletadas**: Intro, Notificaciones y Firmas desde datos de partes.
-- **Persistencia** en **SQLite** (casos, partes, secciones, versiones).
-- **Exportación** a **Word (.docx)** y **bundle .json** del caso.
-- **Configurable por `.env`**.
-- **Compatibilidad LLM local** (LM Studio; modelos pequeños tipo **Gemma 3/GEMA3**) y **funcionamiento online** contra un endpoint OpenAI‑compatible.
+  `Hechos → Derechos vulnerados → Fundamentos jurídicos → Fundamentos de derecho (RAG) → REF`.  
+  *Ventajas:* **coherencia vertical** del escrito, menos omisiones y resultados **reproducibles**; puedes ejecutar por partes o todo junto.
+
+- **Secciones autocompletadas**: Intro, Notificaciones y Firmas desde datos de partes.  
+  *Ventajas:* elimina tecleo repetitivo, **reduce inconsistencias** (nombres/direcciones) y agiliza notificaciones y firmas.
+
+- **Persistencia** en **SQLite** (casos, partes, secciones, versiones).  
+  *Ventajas:* base **portable** (archivo `.db`), **cero** instalación de servidor, versiones de secciones y backups simples.
+
+- **Exportación** a **Word (.docx)** y **bundle .json** del caso.  
+  *Ventajas:* **editable por cualquiera** (Word), **interoperable** (JSON), facilita revisión y control de cambios.
+
+- **Configurable por `.env`**.  
+  *Ventajas:* cambia **modelo LLM**, temperatura, embeddings, `TOP_K`, rutas y modos **sin tocar código** (dev/prod).
+
+- **Compatibilidad LLM local** (LM Studio; modelos pequeños tipo **Gemma 3/GEMA3**) y **funcionamiento online** contra un endpoint OpenAI-compatible.  
+  *Ventajas:* **barrera de hardware baja** y **privacidad local**, o **escalamiento** en la nube; funciona en PCs modestos y clientes móviles vía navegador.
+
+
 
 ---
 
@@ -150,28 +169,23 @@ source env/bin/activate
 
 ### 2) Instalar dependencias
 
-Si aún no tienes `requirements.txt`, puedes generarlo con `pipreqs` o usar el provisto.  
-Instala todo:
-
-```bash
 pip install -r requirements.txt
-```
 
 ### 3) Configurar el LLM (LM Studio local o endpoint online)
 
 **LM Studio (local):**
-1. Abre LM Studio y descarga un modelo **pequeño** (ej.: *Gemma 3* en variante cuantil Q4/Q5).
-2. Inicia el **Server** OpenAI‑compatible en `http://127.0.0.1:1234/v1`.
-3. En tu `.env`:
+1. **Descarga e instala LM Studio** desde 👉 https://lmstudio.ai/  
+2. Abre LM Studio y **habilita las opciones de desarrollador** (Settings → *Developer* / *Advanced* → Enable Developer features).  
+3. En la pestaña **Models**, **descarga el modelo “GEMA”** (p. ej., *Gemma 3/GEMA3* u otro equivalente ligero).  
+   - Si decides usar **otro modelo**, **solo cambia su nombre** en el archivo `.env` (clave `LLM_MODEL`).  
+4. En **Settings → Developer**, **activa “Local Server (OpenAI compatible)” y selecciona el modelo a cargar/servir** en el desplegable del servidor. Verifica que el estado esté en **Running** y que aparezca **Reachable at: `http://127.0.0.1:1234`**.  
+5. Configura tu `.env` (asegúrate de que `LLM_MODEL` coincida con el nombre/alias del modelo cargado en LM Studio):
    ```ini
    OPENAI_API_BASE=http://127.0.0.1:1234/v1
    OPENAI_API_KEY=lm-studio        # valor dummy aceptado por LM Studio
-   LLM_MODEL=local/gemma-3         # etiqueta o nombre que uses en LM Studio
+   LLM_MODEL=local/gemma-3         # cambia aquí si usas otro modelo (p. ej., local/gema-3)
    LLM_TEMPERATURE=0.2
-   ```
 
-**Endpoint online (opcional):**  
-Apunta `OPENAI_API_BASE` y `OPENAI_API_KEY` al proveedor remoto compatible, y define `LLM_MODEL` según su catálogo.
 
 ### 4) Embeddings y RAG
 
