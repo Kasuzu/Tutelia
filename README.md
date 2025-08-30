@@ -40,19 +40,31 @@ Asistente full-stack para **redactar acciones de tutela en Colombia** con apoyo 
 
 ## ¿Para qué sirve en la vida real?
 
-Las **acciones de tutela** buscan proteger derechos fundamentales de forma **rápida y efectiva**. En la práctica, abogadas/os y ciudadanía enfrentan tres retos:
+La **acción de tutela** es un **mecanismo constitucional** (art. 86) para la protección inmediata de **derechos fundamentales**. **No se requiere abogado** para interponerla: **cualquier persona** puede presentar su tutela. Puede amparar derechos **directamente** o por **conexidad** cuando un derecho no fundamental está íntimamente ligado a uno fundamental.
 
+Este software permite que **cualquier persona** elabore, **presente y corrija** su tutela gracias a la **exportación a Word editable (.docx)** y a un **flujo guiado** que ordena hechos, pretensiones, pruebas y fundamentos. Al ejecutarse **en local**, con **bajos requisitos** (modelos pequeños como *Gemma 3/GEMA3* en LM Studio), favorece el **acceso a la justicia** en contextos con conectividad limitada o equipos modestos.
+
+En la práctica, abogadas/os y ciudadanía enfrentan tres retos:
 1. **Tiempo**: redactar bajo presión (plazos cortos).
 2. **Calidad**: articular hechos, derechos y fundamentos jurídicos sin omitir piezas clave.
 3. **Fuentes**: ubicar precedentes/referencias relevantes para el caso concreto.
 
-Este proyecto ayuda a **estructurar** y **mejorar** el escrito de tutela, sugiere **derechos vulnerados**, arma **fundamentos jurídicos** (incluyendo una sección de **fundamentos de derecho vía RAG** con fuentes reales del repositorio que cargues) y genera una **referencia (REF)** estandarizada. Todo con un flujo guiado, repetible y auditable.
+Este proyecto ayuda a **estructurar** y **mejorar** el escrito de tutela, sugiere **derechos vulnerados**, arma **fundamentos jurídicos** (incluida una sección de **fundamentos de derecho vía RAG** con fuentes reales que cargues) y genera una **referencia (REF)** estandarizada. Todo con un flujo guiado, repetible y auditable.
+
+**Ejes de Ciberpaz que inspiran esta hackatón (origen del programa):**
+- **Derechos Digitales y Derechos de Autor**
+- **Herramientas TIC para el trabajo incluyente y seguro**
+- **Libertades Tecnológicas**
+- **Diversidad e inclusión digital**
+- **Seguridad y confianza digital**
+- **Tecnología y Medio Ambiente**
 
 > **Ejemplos de uso real**  
 > - Personas a las que **no responden peticiones** en términos legales.  
 > - **Demoras en entrega de tratamientos** o servicios de salud esenciales.  
 > - **Barreras administrativas** que afectan derechos de niños, población vulnerable o trabajadores.  
-> - Necesidad de **documentar pruebas y anexos** de manera clara y normalizada.  
+> - Necesidad de **documentar pruebas y anexos** de manera clara y normalizada.
+
 
 ---
 
