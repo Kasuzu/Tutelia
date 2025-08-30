@@ -79,9 +79,6 @@ Este proyecto ayuda a **estructurar** y **mejorar** el escrito de tutela, sugier
 - **Mejoras automáticas** al guardar en **Hechos**, **Pretensiones** (con sugerencias no-económicas) y **Pruebas y Anexos**.  
   *Ventajas:* **ahorra tiempo**, estandariza redacción, sugiere pretensiones válidas y **normaliza pruebas/anexos** (claridad probatoria).
 
-- **Cadena jurídica en un paso** (opcional):  
-  `Hechos → Derechos vulnerados → Fundamentos jurídicos → Fundamentos de derecho (RAG) → REF`.  
-  *Ventajas:* **coherencia vertical** del escrito, menos omisiones y resultados **reproducibles**; puedes ejecutar por partes o todo junto.
 
 - **Secciones autocompletadas**: Intro, Notificaciones y Firmas desde datos de partes.  
   *Ventajas:* elimina tecleo repetitivo, **reduce inconsistencias** (nombres/direcciones) y agiliza notificaciones y firmas.
@@ -105,7 +102,7 @@ Este proyecto ayuda a **estructurar** y **mejorar** el escrito de tutela, sugier
 ## Arquitectura
 
 - **Backend:** FastAPI (endpoints `/advisor/*` y `/wizard/*`).
-- **IA / LLM:** cualquier servidor **OpenAI‑compatible** (LM Studio recomendado para local).
+- **IA / LLM:** cualquier LLM comptaible con el servidor de LM Studio.
 - **RAG:** **ChromaDB** con embeddings de **Hugging Face** (p. ej., `intfloat/multilingual-e5-small`).
 - **Archivos clave:**
   - `app.py` — enrutamiento y páginas rápidas.
@@ -298,31 +295,13 @@ STRICT_CONTEXT=0
 - **Hardware modesto**: con **LM Studio** + modelos **pequeños** (p. ej., *Gemma 3/GEMA3* cuantizada), el backend corre fluido en laptops de gama media/baja.
 - **Acceso desde celular**: basta abrir la URL del servidor en el navegador del teléfono (misma red). El modelo puede correr:
   - **Local** en tu PC/mini‑PC (LM Studio) y el **celular solo consume la UI**.
-  - **Online** en un servidor remoto OpenAI‑compatible (tu teléfono actúa como cliente).
+  - **Online** en un servidor remoto  (tu teléfono actúa como cliente).
 
 > Ejecutar la **inferencia del LLM directamente en el teléfono** dependerá de apps/soporte específico. La vía simple: correr el LLM en un PC y usar el **celular como cliente**.
 
 ---
 
-## Solución de problemas
 
-**P1: `pipreqs` falla en Windows con `UnicodeDecodeError: 'charmap'`**  
-Ejecuta forzando UTF‑8 y usa el ejecutable del venv:
-```powershell
-python -m pip install pipreqs==0.4.13
-.\env\Scripts\pipreqs.exe . --force --savepath requirements.txt --encoding utf-8 --ignore "env,venv,.venv,.git,node_modules,docs,static,exports"
-```
-
-**P2: PowerShell no acepta `&&`**  
-Usa `; if ($?) { ... }` o llama `cmd /c "comando1 && comando2"`.
-
-**P3: LM Studio no responde**  
-Verifica que el **Server** esté activo en `http://127.0.0.1:1234/v1` y que el modelo esté **cargado**. Ajusta `OPENAI_API_BASE` y `LLM_MODEL`.
-
-**P4: No aparecen citas en Advisor**  
-Asegúrate de haber corrido `python ingest.py` y que `DOCS_DIR` contenga documentos. Considera `STRICT_CONTEXT=1` para obligar respaldo documental.
-
----
 
 ## Seguridad y privacidad
 
@@ -338,7 +317,7 @@ Asegúrate de haber corrido `python ingest.py` y que `DOCS_DIR` contenga documen
 No, si usas **LM Studio local** + tu corpus. Internet solo para descargar el modelo la primera vez.
 
 **¿Puedo usar otro LLM?**  
-Sí. Cualquier servidor **OpenAI‑compatible**. Ajusta `OPENAI_API_BASE`, `OPENAI_API_KEY` y `LLM_MODEL`.
+Sí. Cualquier LLM es  **compatible**. Ajusta `OPENAI_API_BASE`, `OPENAI_API_KEY` y `LLM_MODEL`.
 
 **¿Qué documentos admite la ingesta?**  
 PDF, DOCX, TXT y MD. Se trocean y se indexan en Chroma con metadatos de origen/página.
@@ -360,7 +339,7 @@ PDF, DOCX, TXT y MD. Se trocean y se indexan en Chroma con metadatos de origen/p
 ## Licencia y descargos
 
 Este software es **apoyo informativo** para la **redacción de tutelas**; **no sustituye** asesoría legal profesional. Úsalo bajo tu responsabilidad y valida siempre la normativa vigente y precedentes aplicables.  
-Licencia: MIT (cámbiala si tu proyecto usa otra).
+
 
 ---
 
