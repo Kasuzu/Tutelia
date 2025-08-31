@@ -33,7 +33,6 @@ Asistente full-stack para **redactar acciones de tutela en Colombia** con apoyo 
 - [Solución de problemas](#solución-de-problemas)
 - [Seguridad y privacidad](#seguridad-y-privacidad)
 - [FAQ](#faq)
-- [Roadmap](#roadmap)
 - [Licencia y descargos](#licencia-y-descargos)
 
 ---
