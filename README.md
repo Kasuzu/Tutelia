@@ -325,14 +325,6 @@ PDF, DOCX, TXT y MD. Se trocean y se indexan en Chroma con metadatos de origen/p
 **¿Cómo reinicio el índice?**  
 `python reset.py` y luego `python ingest.py`.
 
----
-
-## Roadmap
-
-- Validadores de consistencia entre **Hechos ←→ Pretensiones**.
-- Plantillas DOCX personalizables por despacho/distrito.
-- Panel de citas con **previsualización** (PDF.js) y export a **.bib**.
-- Modo **colaborativo** (multiusuario) con autenticación.
 
 ---
 
